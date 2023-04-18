@@ -30,8 +30,7 @@ type log interface {
 	Info(msg string, keysAndValues ...any)
 }
 
-// router is the interface that wraps around methods Handle, HandleFunc, Handler
-// and ServeHTTP.
+// router is the interface that wraps around methods Handle and ServeHTTP.
 type router interface {
 	Handle(pattern string, handler http.Handler)
 	ServeHTTP(w http.ResponseWriter, r *http.Request)
