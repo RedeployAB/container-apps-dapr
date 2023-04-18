@@ -19,7 +19,7 @@ func TestNew(t *testing.T) {
 		want  *server
 	}{
 		{
-			name:  "deaults",
+			name:  "defaults",
 			input: Options{},
 			want: &server{
 				httpServer: &http.Server{
