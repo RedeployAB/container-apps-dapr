@@ -61,7 +61,7 @@ func TestNew(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			got := New(&mockRouter{}, test.input)
 
-			if diff := cmp.Diff(test.want, got, cmp.AllowUnexported(server{}, mockLogger{}), cmpopts.IgnoreUnexported(http.Server{}, logr.Logger{})); diff != "" {
+			if diff := cmp.Diff(test.want, got, cmp.AllowUnexported(server{}), cmpopts.IgnoreUnexported(http.Server{}, logr.Logger{})); diff != "" {
 				t.Errorf("New(%+v) = unexpected result, (-want, +got)\n%s\n", test.input, diff)
 			}
 		})
@@ -110,9 +110,7 @@ func (ro mockRouter) Handle(pattern string, handler http.Handler) {}
 
 func (ro mockRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {}
 
-type mockLogger struct {
-	logs []string
-}
+type mockLogger struct{}
 
 var logMessages = []string{}
 
