@@ -19,7 +19,7 @@ on:
     - 'endpoint/**'
     - '!endpoint/**.md'
     - '!endpoint/scripts/**'
-  workflows_dispatch:
+  workflow_dispatch:
 
 jobs:
   test:
