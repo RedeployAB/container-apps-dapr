@@ -1,5 +1,6 @@
 #!/bin/bash
 base_branch="main"
+module=endpoint
 version=""
 version_flag=0
 major=0
@@ -76,7 +77,7 @@ else
 fi
 
 
-tag=v$ver
+tag=$module/v$ver
 echo "Creating tag: $tag for version: $ver."
 echo ""
 
