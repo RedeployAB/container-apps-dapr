@@ -76,8 +76,8 @@ func TestServerStart(t *testing.T) {
 		{
 			name: "start",
 			want: []string{
-				"Server started",
-				"Server stopped",
+				"Server started.",
+				"Server stopped.",
 			},
 		},
 	}

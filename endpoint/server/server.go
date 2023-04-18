@@ -92,16 +92,16 @@ func (s server) Start() {
 	s.routes()
 	go func() {
 		if err := s.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			s.log.Error(err, "Server failed to start")
+			s.log.Error(err, "Server failed to start.")
 			os.Exit(1)
 		}
 	}()
-	s.log.Info("Server started", "type", "server", "address", s.httpServer.Addr)
+	s.log.Info("Server started.", "type", "server", "address", s.httpServer.Addr)
 	sig, err := s.stop()
 	if err != nil {
-		s.log.Error(err, "Error stopping server")
+		s.log.Error(err, "Error stopping server.")
 	}
-	s.log.Info("Server stopped", "type", "server", "reason", sig.String())
+	s.log.Info("Server stopped.", "type", "server", "reason", sig.String())
 }
 
 // stop server on SIGINT and SIGTERM.
