@@ -54,7 +54,7 @@ type Options struct {
 	IdleTimeout  time.Duration
 }
 
-// New returns a new *server with the provided router and ...Options.
+// New returns a new *server with the provided router and Options.
 func New(router router, options Options) *server {
 	if options.Port == 0 {
 		options.Port = defaultPort
