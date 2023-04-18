@@ -85,11 +85,13 @@ func TestServerStart(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			srv := &server{
-				httpServer: &http.Server{},
-				log:        mockLogger{},
+				httpServer: &http.Server{
+					Addr: "localhost:3000",
+				},
+				log: mockLogger{},
 			}
 			go func() {
-				time.Sleep(time.Millisecond * 5)
+				time.Sleep(time.Millisecond * 100)
 				syscall.Kill(syscall.Getpid(), syscall.SIGINT)
 			}()
 			srv.Start()
