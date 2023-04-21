@@ -11,6 +11,11 @@ type reporter interface {
 	Run(report report.Report) error
 }
 
+// Service is the interface that wraps around method Create.
+type Service interface {
+	Create(report report.Report) error
+}
+
 // service is service containing settings and a reporter.
 type service struct {
 	r reporter
