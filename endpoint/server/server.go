@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"os"
 	"os/signal"
@@ -10,6 +11,7 @@ import (
 	"time"
 
 	"github.com/RedeployAB/container-apps-dapr/common/logger"
+	"github.com/RedeployAB/container-apps-dapr/endpoint/report"
 )
 
 const (
@@ -42,11 +44,13 @@ type server struct {
 	httpServer *http.Server
 	router     router
 	log        log
+	reporter   report.Service
 }
 
 // Options for the server.
 type Options struct {
 	Logger       log
+	Reporter     report.Service
 	Host         string
 	Port         int
 	ReadTimeout  time.Duration
@@ -55,7 +59,10 @@ type Options struct {
 }
 
 // New returns a new *server with the provided router and Options.
-func New(router router, options Options) *server {
+func New(router router, options Options) (*server, error) {
+	if options.Reporter == nil {
+		return nil, errors.New("reporter is required")
+	}
 	if options.Port == 0 {
 		options.Port = defaultPort
 	}
@@ -84,7 +91,8 @@ func New(router router, options Options) *server {
 		router:     router,
 		httpServer: srv,
 		log:        options.Logger,
-	}
+		reporter:   options.Reporter,
+	}, nil
 }
 
 // Start the server.
