@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/RedeployAB/container-apps-dapr/endpoint/logger"
+	"github.com/RedeployAB/container-apps-dapr/common/logger"
 )
 
 const (

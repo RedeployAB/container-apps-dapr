@@ -52,5 +52,5 @@ CGO_ENABLED=0 GOOS=$os GOARCH=$arch go build \
   -trimpath main.go
 
 if [ $container -eq 1 ] && [ "$os" == "linux" ]; then
-  docker build -t $bin:$version --platform $os/$arch .
+  docker build -t $bin:$version --platform $os/$arch --build-arg BIN=$bin .
 fi
