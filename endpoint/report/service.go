@@ -1,10 +1,14 @@
 package report
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/RedeployAB/container-apps-dapr/common/report"
+)
 
 // reporter is the interface that wraps around method Run.
 type reporter interface {
-	Run(report Report) error
+	Run(report report.Report) error
 }
 
 // service is service containing settings and a reporter.
@@ -23,7 +27,7 @@ func NewService(r reporter) (*service, error) {
 }
 
 // Create a report.
-func (s service) Create(report Report) error {
+func (s service) Create(report report.Report) error {
 	if s.r == nil {
 		return errors.New("error creating report: reporter is nil")
 	}

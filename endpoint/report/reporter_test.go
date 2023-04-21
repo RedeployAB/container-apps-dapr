@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/RedeployAB/container-apps-dapr/common/report"
 	dapr "github.com/dapr/go-sdk/client"
 	"github.com/google/go-cmp/cmp"
 )
@@ -75,7 +76,7 @@ func TestPubsubReporter_Run(t *testing.T) {
 		name  string
 		input struct {
 			reporter *PubsubReporter
-			report   Report
+			report   report.Report
 		}
 		wantErr error
 	}{
@@ -83,7 +84,7 @@ func TestPubsubReporter_Run(t *testing.T) {
 			name: "Empty",
 			input: struct {
 				reporter *PubsubReporter
-				report   Report
+				report   report.Report
 			}{
 				reporter: &PubsubReporter{
 					client: &mockClient{
@@ -100,7 +101,7 @@ func TestPubsubReporter_Run(t *testing.T) {
 			name: "With data",
 			input: struct {
 				reporter *PubsubReporter
-				report   Report
+				report   report.Report
 			}{
 				reporter: &PubsubReporter{
 					client: &mockClient{
@@ -111,7 +112,7 @@ func TestPubsubReporter_Run(t *testing.T) {
 					topic:   defaultPubsubReporterTopic,
 					timeout: defaultPubsubReporterTimeout,
 				},
-				report: Report{
+				report: report.Report{
 					ID:   "id",
 					Data: []byte("data"),
 				},
@@ -121,7 +122,7 @@ func TestPubsubReporter_Run(t *testing.T) {
 			name: "With error",
 			input: struct {
 				reporter *PubsubReporter
-				report   Report
+				report   report.Report
 			}{
 				reporter: &PubsubReporter{
 					client: &mockClient{
