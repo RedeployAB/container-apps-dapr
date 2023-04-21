@@ -8,13 +8,19 @@ import (
 )
 
 const (
-	defaultPubsubReporterName  = "reports"
-	defaultPubsubReporterTopic = "create"
+	defaultPubsubReporterName    = "reports"
+	defaultPubsubReporterTopic   = "create"
+	defaultPubsubReporterTimeout = time.Second * 10
 )
+
+// client is the interface that wraps around method PublishEvent.
+type client interface {
+	PublishEvent(ctx context.Context, pubsubName, topic string, data any, options ...dapr.PublishEventOption) error
+}
 
 // PubsubReporter is a reporter that uses Pubsub with DAPR to run reports.
 type PubsubReporter struct {
-	dapr.Client
+	client
 	address string
 	name    string
 	topic   string
@@ -31,9 +37,24 @@ type PubsubReporterOptions struct {
 // NewPubsubReporter creates a new *PubsubReporter with the provided address
 // and options.
 func NewPubsubReporter(address string, options ...PubsubReporterOptions) (*PubsubReporter, error) {
+	client, err := dapr.NewClient()
+	if err != nil {
+		return nil, err
+	}
+
+	r := newPubsubReporter(address, options...)
+	r.client = client
+
+	return r, nil
+}
+
+// newPubsubReporter creates a new *PubsubReporter with the provided address and
+// options.
+func newPubsubReporter(address string, options ...PubsubReporterOptions) *PubsubReporter {
 	opts := PubsubReporterOptions{
-		Name:  defaultPubsubReporterName,
-		Topic: defaultPubsubReporterTopic,
+		Name:    defaultPubsubReporterName,
+		Topic:   defaultPubsubReporterTopic,
+		Timeout: defaultPubsubReporterTimeout,
 	}
 
 	for _, o := range options {
@@ -43,19 +64,17 @@ func NewPubsubReporter(address string, options ...PubsubReporterOptions) (*Pubsu
 		if len(o.Topic) > 0 {
 			opts.Topic = o.Topic
 		}
-	}
-
-	client, err := dapr.NewClient()
-	if err != nil {
-		return nil, err
+		if o.Timeout > 0 {
+			opts.Timeout = o.Timeout
+		}
 	}
 
 	return &PubsubReporter{
-		Client:  client,
 		address: address,
 		name:    opts.Name,
 		topic:   opts.Topic,
-	}, nil
+		timeout: opts.Timeout,
+	}
 }
 
 // Run a report routine.

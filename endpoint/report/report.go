@@ -19,7 +19,7 @@ func NewReport(id string, data []byte) Report {
 	}
 }
 
-// Serialize Report as gob as []byte.
+// Serialize a Report to a gob.
 func (r Report) Serialize() []byte {
 	var buf bytes.Buffer
 	enc := gob.NewEncoder(&buf)
@@ -27,7 +27,7 @@ func (r Report) Serialize() []byte {
 	return buf.Bytes()
 }
 
-// Desierialize a gob from []byte to Report.
+// Deserialize a Report from a gob.
 func (r *Report) Deserialize(b []byte) error {
 	enc := gob.NewDecoder(bytes.NewBuffer(b))
 	return enc.Decode(&r)
