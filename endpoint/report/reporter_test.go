@@ -14,23 +14,13 @@ import (
 func TestNewPubsubReporter(t *testing.T) {
 	var tests = []struct {
 		name  string
-		input struct {
-			address string
-			options []PubsubReporterOptions
-		}
-		want *PubsubReporter
+		input []PubsubReporterOptions
+		want  *PubsubReporter
 	}{
 		{
-			name: "Empty",
-			input: struct {
-				address string
-				options []PubsubReporterOptions
-			}{
-				address: "",
-				options: nil,
-			},
+			name:  "Empty",
+			input: nil,
 			want: &PubsubReporter{
-				address: "",
 				name:    defaultPubsubReporterName,
 				topic:   defaultPubsubReporterTopic,
 				timeout: defaultPubsubReporterTimeout,
@@ -38,21 +28,14 @@ func TestNewPubsubReporter(t *testing.T) {
 		},
 		{
 			name: "With options",
-			input: struct {
-				address string
-				options []PubsubReporterOptions
-			}{
-				address: "address",
-				options: []PubsubReporterOptions{
-					{
-						Name:    "name",
-						Topic:   "topic",
-						Timeout: time.Second * 5,
-					},
+			input: []PubsubReporterOptions{
+				{
+					Name:    "name",
+					Topic:   "topic",
+					Timeout: time.Second * 5,
 				},
 			},
 			want: &PubsubReporter{
-				address: "address",
 				name:    "name",
 				topic:   "topic",
 				timeout: time.Second * 5,
@@ -62,7 +45,7 @@ func TestNewPubsubReporter(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			got := newPubsubReporter(test.input.address, test.input.options...)
+			got := newPubsubReporter(test.input...)
 
 			if diff := cmp.Diff(test.want, got, cmp.AllowUnexported(PubsubReporter{})); diff != "" {
 				t.Errorf("newPubsubReporter() = unexpected, (-want +got):\n%s\n", diff)
@@ -90,7 +73,6 @@ func TestPubsubReporter_Run(t *testing.T) {
 					client: &mockClient{
 						err: nil,
 					},
-					address: "",
 					name:    defaultPubsubReporterName,
 					topic:   defaultPubsubReporterTopic,
 					timeout: defaultPubsubReporterTimeout,
@@ -107,7 +89,6 @@ func TestPubsubReporter_Run(t *testing.T) {
 					client: &mockClient{
 						err: nil,
 					},
-					address: "",
 					name:    defaultPubsubReporterName,
 					topic:   defaultPubsubReporterTopic,
 					timeout: defaultPubsubReporterTimeout,
@@ -128,7 +109,6 @@ func TestPubsubReporter_Run(t *testing.T) {
 					client: &mockClient{
 						err: errors.New("error"),
 					},
-					address: "",
 					name:    defaultPubsubReporterName,
 					topic:   defaultPubsubReporterTopic,
 					timeout: defaultPubsubReporterTimeout,

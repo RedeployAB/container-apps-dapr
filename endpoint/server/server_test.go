@@ -1,12 +1,14 @@
 package server
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 	"syscall"
 	"testing"
 	"time"
 
+	"github.com/RedeployAB/container-apps-dapr/common/report"
 	"github.com/go-logr/logr"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
@@ -14,13 +16,22 @@ import (
 
 func TestNew(t *testing.T) {
 	var tests = []struct {
-		name  string
-		input Options
-		want  *server
+		name    string
+		input   Options
+		want    *server
+		wantErr error
 	}{
 		{
-			name:  "defaults",
-			input: Options{},
+			name:    "With defaults (no reporter)",
+			input:   Options{},
+			want:    nil,
+			wantErr: errors.New("reporter is required"),
+		},
+		{
+			name: "With defaults",
+			input: Options{
+				Reporter: &mockReporter{},
+			},
 			want: &server{
 				httpServer: &http.Server{
 					Addr:         ":" + strconv.Itoa(defaultPort),
@@ -29,12 +40,13 @@ func TestNew(t *testing.T) {
 					WriteTimeout: defaultWriteTimeout,
 					IdleTimeout:  defaultIdleTimeout,
 				},
-				router: &mockRouter{},
-				log:    logr.Logger{},
+				router:   &mockRouter{},
+				log:      logr.Logger{},
+				reporter: &mockReporter{},
 			},
 		},
 		{
-			name: "with options",
+			name: "With options",
 			input: Options{
 				Host:         "localhost",
 				Port:         3001,
@@ -42,6 +54,7 @@ func TestNew(t *testing.T) {
 				WriteTimeout: time.Second * 10,
 				IdleTimeout:  time.Second * 20,
 				Logger:       mockLogger{},
+				Reporter:     &mockReporter{},
 			},
 			want: &server{
 				httpServer: &http.Server{
@@ -51,18 +64,23 @@ func TestNew(t *testing.T) {
 					WriteTimeout: time.Second * 10,
 					IdleTimeout:  time.Second * 20,
 				},
-				router: &mockRouter{},
-				log:    mockLogger{},
+				router:   &mockRouter{},
+				log:      mockLogger{},
+				reporter: &mockReporter{},
 			},
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			got := New(&mockRouter{}, test.input)
+			got, gotErr := New(&mockRouter{}, test.input)
 
-			if diff := cmp.Diff(test.want, got, cmp.AllowUnexported(server{}), cmpopts.IgnoreUnexported(http.Server{}, logr.Logger{})); diff != "" {
+			if diff := cmp.Diff(test.want, got, cmp.AllowUnexported(server{}, mockReporter{}), cmpopts.IgnoreUnexported(http.Server{}, logr.Logger{})); diff != "" {
 				t.Errorf("New(%+v) = unexpected result, (-want, +got)\n%s\n", test.input, diff)
+			}
+
+			if test.wantErr != nil && gotErr == nil {
+				t.Errorf("New(%+v) = unexpected result, want error, got nil\n", test.input)
 			}
 		})
 	}
@@ -74,7 +92,7 @@ func TestServer_Start(t *testing.T) {
 		want []string
 	}{
 		{
-			name: "start",
+			name: "Start",
 			want: []string{
 				"Server started.",
 				"Server stopped.",
@@ -84,11 +102,14 @@ func TestServer_Start(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
+			logMessages = []string{}
 			srv := &server{
 				httpServer: &http.Server{
 					Addr: "localhost:3000",
 				},
-				log: mockLogger{},
+				router:   &mockRouter{},
+				log:      mockLogger{},
+				reporter: &mockReporter{},
 			}
 			go func() {
 				time.Sleep(time.Millisecond * 100)
@@ -120,4 +141,15 @@ func (l mockLogger) Error(err error, msg string, keysAndValues ...any) {
 
 func (l mockLogger) Info(msg string, keysAndValues ...any) {
 	logMessages = append(logMessages, msg)
+}
+
+type mockReporter struct {
+	err error
+}
+
+func (r mockReporter) Create(report.Report) error {
+	if r.err != nil {
+		return r.err
+	}
+	return nil
 }

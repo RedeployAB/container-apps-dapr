@@ -22,7 +22,6 @@ type client interface {
 // PubsubReporter is a reporter that uses Pubsub with DAPR to run reports.
 type PubsubReporter struct {
 	client
-	address string
 	name    string
 	topic   string
 	timeout time.Duration
@@ -37,13 +36,13 @@ type PubsubReporterOptions struct {
 
 // NewPubsubReporter creates a new *PubsubReporter with the provided address
 // and options.
-func NewPubsubReporter(address string, options ...PubsubReporterOptions) (*PubsubReporter, error) {
+func NewPubsubReporter(options ...PubsubReporterOptions) (*PubsubReporter, error) {
 	client, err := dapr.NewClient()
 	if err != nil {
 		return nil, err
 	}
 
-	r := newPubsubReporter(address, options...)
+	r := newPubsubReporter(options...)
 	r.client = client
 
 	return r, nil
@@ -51,7 +50,7 @@ func NewPubsubReporter(address string, options ...PubsubReporterOptions) (*Pubsu
 
 // newPubsubReporter creates a new *PubsubReporter with the provided address and
 // options.
-func newPubsubReporter(address string, options ...PubsubReporterOptions) *PubsubReporter {
+func newPubsubReporter(options ...PubsubReporterOptions) *PubsubReporter {
 	opts := PubsubReporterOptions{
 		Name:    defaultPubsubReporterName,
 		Topic:   defaultPubsubReporterTopic,
@@ -71,7 +70,6 @@ func newPubsubReporter(address string, options ...PubsubReporterOptions) *Pubsub
 	}
 
 	return &PubsubReporter{
-		address: address,
 		name:    opts.Name,
 		topic:   opts.Topic,
 		timeout: opts.Timeout,
