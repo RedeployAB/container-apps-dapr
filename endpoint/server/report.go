@@ -5,7 +5,7 @@ import "encoding/json"
 // Report is a incoming report request.
 type Report struct {
 	ID   string `json:"id"`
-	Data string `json:"data"`
+	Data []byte `json:"data"`
 }
 
 // JSON returns the JSON representation of the message.

@@ -20,14 +20,14 @@ func (s server) reportHandler() http.Handler {
 			http.Error(w, "Invalid request body", http.StatusBadRequest)
 			return
 		}
-		s.log.Info("Received report.", "handler", "report", "id", re.ID, "data", string(re.Data))
+		s.log.Info("Incoming report.", "handler", "report", "id", re.ID)
 
-		if err := s.reporter.Create(report.NewReport(re.ID, []byte(re.Data))); err != nil {
+		if err := s.reporter.Create(report.NewReport(re.ID, re.Data)); err != nil {
 			s.log.Error(err, "Error creating report.")
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
-		s.log.Info("Report sent for creation.", "handler", "report", "id", re.ID, "data", string(re.Data))
+		s.log.Info("Report sent for creation.", "handler", "report", "id", re.ID)
 
 		w.WriteHeader(http.StatusOK)
 		w.Write(re.JSON())
