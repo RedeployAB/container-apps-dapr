@@ -75,7 +75,7 @@ func TestNew(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			got, gotErr := New(&mockRouter{}, test.input)
 
-			if diff := cmp.Diff(test.want, got, cmp.AllowUnexported(server{}), cmpopts.IgnoreUnexported(http.Server{}, logr.Logger{})); diff != "" {
+			if diff := cmp.Diff(test.want, got, cmp.AllowUnexported(server{}, mockReporter{}), cmpopts.IgnoreUnexported(http.Server{}, logr.Logger{})); diff != "" {
 				t.Errorf("New(%+v) = unexpected result, (-want, +got)\n%s\n", test.input, diff)
 			}
 
@@ -102,6 +102,7 @@ func TestServer_Start(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
+			logMessages = []string{}
 			srv := &server{
 				httpServer: &http.Server{
 					Addr: "localhost:3000",
@@ -142,8 +143,13 @@ func (l mockLogger) Info(msg string, keysAndValues ...any) {
 	logMessages = append(logMessages, msg)
 }
 
-type mockReporter struct{}
+type mockReporter struct {
+	err error
+}
 
 func (r mockReporter) Create(report.Report) error {
+	if r.err != nil {
+		return r.err
+	}
 	return nil
 }
