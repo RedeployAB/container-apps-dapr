@@ -18,7 +18,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	reporter, err := config.SetupReporter(cfg.Reporter)
+	reporter, err := config.SetupReporter(cfg.Storer)
 	if err != nil {
 		log.Error(err, "Error setting up reporter.")
 		os.Exit(1)
@@ -28,8 +28,8 @@ func main() {
 		Reporter: reporter,
 		Logger:   log,
 		Address:  cfg.Server.Host + ":" + strconv.Itoa(cfg.Server.Port),
-		Name:     cfg.Reporter.PubsubName,
-		Topic:    cfg.Reporter.PubsubTopic,
+		Name:     cfg.Server.Name,
+		Topic:    cfg.Server.Topic,
 	})
 	if err != nil {
 		log.Error(err, "Error creating server.")

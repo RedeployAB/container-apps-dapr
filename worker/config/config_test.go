@@ -21,44 +21,40 @@ func TestNew(t *testing.T) {
 			input: map[string]string{},
 			want: &Configuration{
 				Server: Server{
-					Host: defaultHost,
-					Port: defaultPort,
+					Host:  defaultHost,
+					Port:  defaultPort,
+					Name:  defaultName,
+					Topic: defaultTopic,
 				},
-				Reporter: Reporter{
-					Type:          defaultReporterType,
-					PubsubName:    defaultReporterPubsubName,
-					PubsubTopic:   defaultReporterPubsubTopic,
-					PubsubTimeout: defaultReporterPubsubTimeout,
-					Storer: Storer{
-						Type: defaultReporterStorerType,
-					},
+				Storer: Storer{
+					Type:    defaultStorerType,
+					Name:    defaultStorerName,
+					Timeout: defaultStorerTimeout,
 				},
 			},
 		},
 		{
 			name: "With environment variables",
 			input: map[string]string{
-				"WORKER_HOST":                    "localhost",
-				"WORKER_PORT":                    "3001",
-				"WORKER_REPORTER_TYPE":           "storage",
-				"WORKER_REPORTER_PUBSUB_NAME":    "reports-test",
-				"WORKER_REPORTER_PUBSUB_TOPIC":   "create-test",
-				"WORKER_REPORTER_PUBSUB_TIMEOUT": "5s",
-				"WORKER_REPORTER_STORER_TYPE":    "blob-test",
+				"WORKER_HOST":           "localhost",
+				"WORKER_PORT":           "3001",
+				"WORKER_NAME":           "reports-test",
+				"WORKER_TOPIC":          "create-test",
+				"WORKER_STORER_TYPE":    "blob-test",
+				"WORKER_STORER_NAME":    "reports-test",
+				"WORKER_STORER_TIMEOUT": "5s",
 			},
 			want: &Configuration{
 				Server: Server{
-					Host: "localhost",
-					Port: 3001,
+					Host:  "localhost",
+					Port:  3001,
+					Name:  "reports-test",
+					Topic: "create-test",
 				},
-				Reporter: Reporter{
-					Type:          "storage",
-					PubsubName:    "reports-test",
-					PubsubTopic:   "create-test",
-					PubsubTimeout: time.Second * 5,
-					Storer: Storer{
-						Type: "blob-test",
-					},
+				Storer: Storer{
+					Type:    "blob-test",
+					Name:    "reports-test",
+					Timeout: time.Second * 5,
 				},
 			},
 		},

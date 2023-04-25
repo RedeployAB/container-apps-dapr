@@ -9,19 +9,10 @@ import (
 )
 
 const (
-	defaultHost = "0.0.0.0"
-	defaultPort = 3001
-)
-
-const (
-	reporterTypePubsub = "pubsub"
-)
-
-const (
-	defaultReporterType          = reporterTypePubsub
-	defaultReporterPubsubName    = "reports"
-	defaultReporterPubsubTopic   = "create"
-	defaultReporterPubsubTimeout = time.Second * 10
+	defaultHost  = "0.0.0.0"
+	defaultPort  = 3001
+	defaultName  = "reports"
+	defaultTopic = "create"
 )
 
 const (
@@ -29,34 +20,30 @@ const (
 )
 
 const (
-	defaultReporterStorerType    = storerTypeBlob
-	defaultReporterStorerName    = "reports"
-	defaultReporterStorerTimeout = time.Second * 10
+	defaultStorerType    = storerTypeBlob
+	defaultStorerName    = "reports"
+	defaultStorerTimeout = time.Second * 10
 )
 
 // Configuration contains the configuration for the application.
 type Configuration struct {
-	Server   Server
-	Reporter Reporter
+	Server Server
+	Storer Storer
 }
 
 // Server contains the configuration for the server.
 type Server struct {
-	Host string `env:"WORKER_HOST"`
-	Port int    `env:"WORKER_PORT"`
+	Host  string `env:"WORKER_HOST"`
+	Port  int    `env:"WORKER_PORT"`
+	Name  string `env:"WORKER_NAME"`
+	Topic string `env:"WORKER_TOPIC"`
 }
 
-// Reporter contains the configuration for the reporter service.
-type Reporter struct {
-	Type          string        `env:"WORKER_REPORTER_TYPE"`
-	PubsubName    string        `env:"WORKER_REPORTER_PUBSUB_NAME"`
-	PubsubTopic   string        `env:"WORKER_REPORTER_PUBSUB_TOPIC"`
-	PubsubTimeout time.Duration `env:"WORKER_REPORTER_PUBSUB_TIMEOUT"`
-	Storer        Storer
-}
-
+// Storer contains the configuration for the storer.
 type Storer struct {
-	Type string `env:"WORKER_REPORTER_STORER_TYPE"`
+	Type    string        `env:"WORKER_STORER_TYPE"`
+	Name    string        `env:"WORKER_STORER_NAME"`
+	Timeout time.Duration `env:"WORKER_STORER_TIMEOUT"`
 }
 
 // New creates a new *Configuration based on environment variables
@@ -64,17 +51,15 @@ type Storer struct {
 func New() (*Configuration, error) {
 	c := &Configuration{
 		Server: Server{
-			Host: defaultHost,
-			Port: defaultPort,
+			Host:  defaultHost,
+			Port:  defaultPort,
+			Name:  defaultName,
+			Topic: defaultTopic,
 		},
-		Reporter: Reporter{
-			Type:          defaultReporterType,
-			PubsubName:    defaultReporterPubsubName,
-			PubsubTopic:   defaultReporterPubsubTopic,
-			PubsubTimeout: defaultReporterPubsubTimeout,
-			Storer: Storer{
-				Type: defaultReporterStorerType,
-			},
+		Storer: Storer{
+			Type:    defaultStorerType,
+			Name:    defaultStorerName,
+			Timeout: defaultStorerTimeout,
 		},
 	}
 
@@ -86,18 +71,19 @@ func New() (*Configuration, error) {
 }
 
 // SetupReporter creates a new report.Service based on the provided configuration.
-func SetupReporter(c Reporter) (report.Service, error) {
+func SetupReporter(c Storer) (report.Service, error) {
 	var err error
 	var storer report.Storer
-	if c.Storer.Type == storerTypeBlob {
+	if c.Type == storerTypeBlob {
 		storer, err = report.NewBlobStorer(report.BlobStorerOptions{
-			Name: "reports",
+			Name:    c.Name,
+			Timeout: c.Timeout,
 		})
 		if err != nil {
 			return nil, fmt.Errorf("setup service: %w", err)
 		}
 	} else {
-		return nil, fmt.Errorf("setup service: unknown storer type: %q", c.Storer.Type)
+		return nil, fmt.Errorf("setup service: unknown storer type: %q", c.Type)
 	}
 
 	return report.NewService(storer)
