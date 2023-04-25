@@ -90,11 +90,8 @@ func SetupReporter(c Reporter) (report.Service, error) {
 			return nil, fmt.Errorf("setup service: %w", err)
 		}
 	} else {
-		return nil, fmt.Errorf("setup service: unknown reporter type %q", c.Type)
+		return nil, fmt.Errorf("setup service: unknown reporter type: %q", c.Type)
 	}
 
-	if err != nil {
-		return nil, fmt.Errorf("setup service: %w", err)
-	}
 	return report.NewService(r)
 }

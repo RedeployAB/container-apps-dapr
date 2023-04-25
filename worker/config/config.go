@@ -1,7 +1,7 @@
 package config
 
 import (
-	"errors"
+	"fmt"
 	"time"
 
 	"github.com/RedeployAB/container-apps-dapr/worker/report"
@@ -103,10 +103,10 @@ func SetupReporter(c Reporter) (report.Service, error) {
 			Name: "reports",
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("setup service: %w", err)
 		}
 	} else {
-		return nil, errors.New("setup service: unknown storer type")
+		return nil, fmt.Errorf("setup service: unknown storer type: %q", c.Storer.Type)
 	}
 
 	return report.NewService(storer)
