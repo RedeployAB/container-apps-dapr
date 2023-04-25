@@ -9,8 +9,6 @@ import (
 	"testing"
 )
 
-// TestReportHandler tests the reportHandler method with table driven tests,
-// with the help of the httptest package and a mock reporter and logger.
 func TestReportHandler(t *testing.T) {
 	var tests = []struct {
 		name  string

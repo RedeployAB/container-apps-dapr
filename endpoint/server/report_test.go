@@ -2,7 +2,6 @@ package server
 
 import "testing"
 
-// TestReport_JSON tests the JSON method.
 func TestReport_JSON(t *testing.T) {
 	report := Report{
 		ID:   "123",
