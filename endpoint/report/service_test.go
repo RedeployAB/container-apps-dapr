@@ -12,7 +12,7 @@ func TestNewService(t *testing.T) {
 	var tests = []struct {
 		name  string
 		input struct {
-			r reporter
+			r Reporter
 		}
 		want    *service
 		wantErr error
@@ -20,7 +20,7 @@ func TestNewService(t *testing.T) {
 		{
 			name: "With reporter",
 			input: struct {
-				r reporter
+				r Reporter
 			}{
 				r: mockReporter{},
 			},
@@ -31,7 +31,7 @@ func TestNewService(t *testing.T) {
 		{
 			name: "With nil reporter",
 			input: struct {
-				r reporter
+				r Reporter
 			}{
 				r: nil,
 			},
@@ -58,7 +58,7 @@ func TestService_Create(t *testing.T) {
 	var tests = []struct {
 		name  string
 		input struct {
-			r    reporter
+			r    Reporter
 			id   string
 			data []byte
 		}
@@ -67,7 +67,7 @@ func TestService_Create(t *testing.T) {
 		{
 			name: "Run reporter",
 			input: struct {
-				r    reporter
+				r    Reporter
 				id   string
 				data []byte
 			}{
@@ -80,7 +80,7 @@ func TestService_Create(t *testing.T) {
 		{
 			name: "With nil reporter",
 			input: struct {
-				r    reporter
+				r    Reporter
 				id   string
 				data []byte
 			}{
@@ -93,7 +93,7 @@ func TestService_Create(t *testing.T) {
 		{
 			name: "With reporter error",
 			input: struct {
-				r    reporter
+				r    Reporter
 				id   string
 				data []byte
 			}{

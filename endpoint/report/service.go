@@ -6,8 +6,8 @@ import (
 	"github.com/RedeployAB/container-apps-dapr/common/report"
 )
 
-// reporter is the interface that wraps around method Run.
-type reporter interface {
+// Reporter is the interface that wraps around method Run.
+type Reporter interface {
 	Run(report report.Report) error
 }
 
@@ -18,11 +18,11 @@ type Service interface {
 
 // service is service containing settings and a reporter.
 type service struct {
-	r reporter
+	r Reporter
 }
 
 // NewService returns a new *service.
-func NewService(r reporter) (*service, error) {
+func NewService(r Reporter) (*service, error) {
 	if r == nil {
 		return nil, errors.New("error creating service: reporter is nil")
 	}

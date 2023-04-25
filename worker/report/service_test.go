@@ -11,7 +11,7 @@ import (
 func TestNewService(t *testing.T) {
 	var tests = []struct {
 		name    string
-		input   storer
+		input   Storer
 		want    *service
 		wantErr error
 	}{
@@ -48,7 +48,7 @@ func TestNewService(t *testing.T) {
 func TestService_Create(t *testing.T) {
 	var tests = []struct {
 		name    string
-		input   storer
+		input   Storer
 		wantErr error
 	}{
 		{
