@@ -81,5 +81,5 @@ func (r PubsubReporter) Run(report report.Report) error {
 	ctx, cancel := context.WithTimeout(context.Background(), r.timeout)
 	defer cancel()
 
-	return r.PublishEvent(ctx, r.name, r.topic, report.Serialize())
+	return r.PublishEvent(ctx, r.name, r.topic, report.JSON())
 }
