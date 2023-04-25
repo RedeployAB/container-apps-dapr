@@ -6,8 +6,8 @@ import (
 	"github.com/RedeployAB/container-apps-dapr/common/report"
 )
 
-// store is the interface that wraps around method Store.
-type storer interface {
+// Storer is the interface that wraps around method Store.
+type Storer interface {
 	Store(r report.Report) error
 }
 
@@ -18,11 +18,11 @@ type Service interface {
 
 // service is the implementation of the Service interface.
 type service struct {
-	s storer
+	s Storer
 }
 
 // NewService creates a Service.
-func NewService(s storer) (*service, error) {
+func NewService(s Storer) (*service, error) {
 	if s == nil {
 		return nil, errors.New("error")
 	}

@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	defaultBindingName    = "reports"
-	defaultBindingTimeout = time.Second * 10
+	defaultStorerName    = "reports"
+	defaultStorerTimeout = time.Second * 10
 )
 
 // client is the interface that wraps around method InvokeBinding.
@@ -47,8 +47,8 @@ func NewBlobStorer(options ...BlobStorerOptions) (*BlobStorer, error) {
 // newBlobStorer creates a new *BlobStorer with the provided options.
 func newBlobStorer(options ...BlobStorerOptions) *BlobStorer {
 	opts := BlobStorerOptions{
-		Name:    defaultBindingName,
-		Timeout: defaultBindingTimeout,
+		Name:    defaultStorerName,
+		Timeout: defaultStorerTimeout,
 	}
 
 	for _, o := range options {

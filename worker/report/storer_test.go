@@ -23,8 +23,8 @@ func TestNewBlobStorer(t *testing.T) {
 			input: BlobStorerOptions{},
 			want: &BlobStorer{
 				client:  nil,
-				name:    defaultBindingName,
-				timeout: defaultBindingTimeout,
+				name:    defaultStorerName,
+				timeout: defaultStorerTimeout,
 			},
 		},
 		{
