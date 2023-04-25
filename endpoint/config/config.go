@@ -44,10 +44,10 @@ type Server struct {
 
 // Reporter contains the configuration for the reporter service.
 type Reporter struct {
-	Type          string        `env:"REPORTER_TYPE"`
-	PubsubName    string        `env:"REPORTER_PUBSUB_NAME"`
-	PubsubTopic   string        `env:"REPORTER_PUBSUB_TOPIC"`
-	PubsubTimeout time.Duration `env:"REPORTER_PUBSUB_TIMEOUT"`
+	Type          string        `env:"ENDPOINT_REPORTER_TYPE"`
+	PubsubName    string        `env:"ENDPOINT_REPORTER_PUBSUB_NAME"`
+	PubsubTopic   string        `env:"ENDPOINT_REPORTER_PUBSUB_TOPIC"`
+	PubsubTimeout time.Duration `env:"ENDPOINT_REPORTER_PUBSUB_TIMEOUT"`
 }
 
 // New creates a new *Configuration based on environment variables
@@ -76,8 +76,7 @@ func New() (*Configuration, error) {
 	return c, nil
 }
 
-// SetupReporter sets up a new report.Service based on the provided Reporter
-// configuration.
+// SetupReporter sets up a new report.Service based on the provided configuration.
 func SetupReporter(c Reporter) (report.Service, error) {
 	var r report.Reporter
 	var err error

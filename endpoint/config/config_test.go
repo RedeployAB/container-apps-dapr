@@ -38,15 +38,15 @@ func TestNew(t *testing.T) {
 		{
 			name: "With environment variables",
 			input: map[string]string{
-				"ENDPOINT_HOST":           "localhost",
-				"ENDPOINT_PORT":           "3001",
-				"ENDPOINT_READ_TIMEOUT":   "10s",
-				"ENDPOINT_WRITE_TIMEOUT":  "10s",
-				"ENDPOINT_IDLE_TIMEOUT":   "10s",
-				"REPORTER_TYPE":           "storage",
-				"REPORTER_PUBSUB_NAME":    "reports-test",
-				"REPORTER_PUBSUB_TOPIC":   "create-test",
-				"REPORTER_PUBSUB_TIMEOUT": "5s",
+				"ENDPOINT_HOST":                    "localhost",
+				"ENDPOINT_PORT":                    "3001",
+				"ENDPOINT_READ_TIMEOUT":            "10s",
+				"ENDPOINT_WRITE_TIMEOUT":           "10s",
+				"ENDPOINT_IDLE_TIMEOUT":            "10s",
+				"ENDPOINT_REPORTER_TYPE":           "pubsub-test",
+				"ENDPOINT_REPORTER_PUBSUB_NAME":    "reports-test",
+				"ENDPOINT_REPORTER_PUBSUB_TOPIC":   "create-test",
+				"ENDPOINT_REPORTER_PUBSUB_TIMEOUT": "5s",
 			},
 			want: &Configuration{
 				Server: Server{
@@ -57,7 +57,7 @@ func TestNew(t *testing.T) {
 					IdleTimeout:  time.Second * 10,
 				},
 				Reporter: Reporter{
-					Type:          "storage",
+					Type:          "pubsub-test",
 					PubsubName:    "reports-test",
 					PubsubTopic:   "create-test",
 					PubsubTimeout: time.Second * 5,
