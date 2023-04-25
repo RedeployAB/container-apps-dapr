@@ -9,11 +9,8 @@ import (
 )
 
 const (
-	defaultHost         = "0.0.0.0"
-	defaultPort         = 3001
-	defaultReadTimeout  = time.Second * 15
-	defaultWriteTimeout = time.Second * 15
-	defaultIdleTimeout  = time.Second * 30
+	defaultHost = "0.0.0.0"
+	defaultPort = 3001
 )
 
 const (
@@ -45,11 +42,8 @@ type Configuration struct {
 
 // Server contains the configuration for the server.
 type Server struct {
-	Host         string        `env:"WORKER_HOST"`
-	Port         int           `env:"WORKER_PORT"`
-	ReadTimeout  time.Duration `env:"WORKER_READ_TIMEOUT"`
-	WriteTimeout time.Duration `env:"WORKER_WRITE_TIMEOUT"`
-	IdleTimeout  time.Duration `env:"WORKER_IDLE_TIMEOUT"`
+	Host string `env:"WORKER_HOST"`
+	Port int    `env:"WORKER_PORT"`
 }
 
 // Reporter contains the configuration for the reporter service.
@@ -70,11 +64,8 @@ type Storer struct {
 func New() (*Configuration, error) {
 	c := &Configuration{
 		Server: Server{
-			Host:         defaultHost,
-			Port:         defaultPort,
-			ReadTimeout:  defaultReadTimeout,
-			WriteTimeout: defaultWriteTimeout,
-			IdleTimeout:  defaultIdleTimeout,
+			Host: defaultHost,
+			Port: defaultPort,
 		},
 		Reporter: Reporter{
 			Type:          defaultReporterType,

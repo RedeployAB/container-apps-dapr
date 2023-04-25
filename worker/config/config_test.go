@@ -21,11 +21,8 @@ func TestNew(t *testing.T) {
 			input: map[string]string{},
 			want: &Configuration{
 				Server: Server{
-					Host:         defaultHost,
-					Port:         defaultPort,
-					ReadTimeout:  defaultReadTimeout,
-					WriteTimeout: defaultWriteTimeout,
-					IdleTimeout:  defaultIdleTimeout,
+					Host: defaultHost,
+					Port: defaultPort,
 				},
 				Reporter: Reporter{
 					Type:          defaultReporterType,
@@ -43,9 +40,6 @@ func TestNew(t *testing.T) {
 			input: map[string]string{
 				"WORKER_HOST":                    "localhost",
 				"WORKER_PORT":                    "3001",
-				"WORKER_READ_TIMEOUT":            "10s",
-				"WORKER_WRITE_TIMEOUT":           "10s",
-				"WORKER_IDLE_TIMEOUT":            "10s",
 				"WORKER_REPORTER_TYPE":           "storage",
 				"WORKER_REPORTER_PUBSUB_NAME":    "reports-test",
 				"WORKER_REPORTER_PUBSUB_TOPIC":   "create-test",
@@ -54,11 +48,8 @@ func TestNew(t *testing.T) {
 			},
 			want: &Configuration{
 				Server: Server{
-					Host:         "localhost",
-					Port:         3001,
-					ReadTimeout:  time.Second * 10,
-					WriteTimeout: time.Second * 10,
-					IdleTimeout:  time.Second * 10,
+					Host: "localhost",
+					Port: 3001,
 				},
 				Reporter: Reporter{
 					Type:          "storage",
