@@ -1,8 +1,7 @@
 package report
 
 import (
-	"bytes"
-	"encoding/gob"
+	"encoding/json"
 )
 
 // Report represents a report with an ID and data.
@@ -19,16 +18,8 @@ func NewReport(id string, data []byte) Report {
 	}
 }
 
-// Serialize a Report to a gob.
-func (r Report) Serialize() []byte {
-	var buf bytes.Buffer
-	enc := gob.NewEncoder(&buf)
-	enc.Encode(r)
-	return buf.Bytes()
-}
-
-// Deserialize a Report from a gob.
-func (r *Report) Deserialize(b []byte) error {
-	enc := gob.NewDecoder(bytes.NewBuffer(b))
-	return enc.Decode(&r)
+// JSON returns a JSON representation of a Report.
+func (r Report) JSON() []byte {
+	b, _ := json.Marshal(r)
+	return b
 }

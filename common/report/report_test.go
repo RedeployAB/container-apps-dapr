@@ -69,17 +69,16 @@ func TestNewReport(t *testing.T) {
 	}
 }
 
-// TestSerializeDeserialize tests the serialization and deserialization of a Report.
-func TestSerializeDeserialize(t *testing.T) {
+func TestReport_JSON(t *testing.T) {
 	var tests = []struct {
 		name  string
 		input Report
-		want  Report
+		want  []byte
 	}{
 		{
 			name:  "Empty",
 			input: Report{},
-			want:  Report{},
+			want:  []byte(`{"ID":"","Data":null}`),
 		},
 		{
 			name: "With data",
@@ -87,20 +86,16 @@ func TestSerializeDeserialize(t *testing.T) {
 				ID:   "id",
 				Data: []byte("data"),
 			},
-			want: Report{
-				ID:   "id",
-				Data: []byte("data"),
-			},
+			want: []byte(`{"ID":"id","Data":"ZGF0YQ=="}`),
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			got := Report{}
-			got.Deserialize(test.input.Serialize())
+			got := test.input.JSON()
 
-			if diff := cmp.Diff(test.want, got); diff != "" {
-				t.Errorf("Serialize/Deserialize() = unexpected, (-want +got):\n%s\n", diff)
+			if diff := cmp.Diff(string(test.want), string(got)); diff != "" {
+				t.Errorf("JSON() = unexpected, (-want +got):\n%s\n", diff)
 			}
 		})
 	}
