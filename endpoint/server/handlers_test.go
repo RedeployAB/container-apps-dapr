@@ -89,7 +89,7 @@ func TestReportHandler(t *testing.T) {
 				log: &mockLogger{},
 			}
 
-			req := httptest.NewRequest(test.input.method, "/report", strings.NewReader(test.input.body))
+			req := httptest.NewRequest(test.input.method, "/reports", strings.NewReader(test.input.body))
 			w := httptest.NewRecorder()
 
 			s.reportHandler().ServeHTTP(w, req)
