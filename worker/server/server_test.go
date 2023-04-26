@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/RedeployAB/container-apps-dapr/common/report"
+	"github.com/RedeployAB/container-apps-dapr/worker/report"
 	"github.com/dapr/go-sdk/service/common"
 	"github.com/go-logr/logr"
 	"github.com/google/go-cmp/cmp"
