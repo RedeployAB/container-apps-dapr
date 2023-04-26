@@ -37,6 +37,7 @@ bin_path=$build_root/$bin
 
 if [ -z $bin ]; then
   echo "A binary name must be specified through the module flag."
+  exit 1
 fi
 
 if [ -z $version ]; then
