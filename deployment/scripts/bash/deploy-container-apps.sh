@@ -15,6 +15,8 @@ worker_name="worker"
 worker_version=1.0.0
 worker_port=3001
 
+default_servicebus_namespace_authorization_rule="pubsub-scaling"
+
 
 for arg in "$@"
 do
@@ -87,7 +89,7 @@ if [[ -z "$servicebus_namespace" ]]; then
 fi
 
 if [[ -z "$servicebus_namespace_authorization_rule" ]]; then
-  servicebus_namespace_authorization_rule="pubsub-scaling"
+  servicebus_namespace_authorization_rule=$default_servicebus_namespace_authorization_rule
 fi
 
 endpoint_image=$registry/$endpoint_name:$endpoint_version
