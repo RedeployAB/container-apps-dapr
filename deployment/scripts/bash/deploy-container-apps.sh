@@ -10,6 +10,7 @@ servicebus_namespace_authorization_rule=$SERVICEBUS_NAMESPACE_AUTHORIZATION_RULE
 endpoint_name="endpoint"
 endpoint_version=1.0.0
 endpoint_port=3000
+endpoint_api_keys=""
 
 worker_name="worker"
 worker_version=1.0.0
@@ -59,6 +60,11 @@ do
     --worker-version)
       shift
       worker_version=$1
+      shift
+      ;;
+    --endpoint-api-keys)
+      shift
+      endpoint_api_keys=$1
       shift
       ;;
   esac
@@ -128,8 +134,11 @@ az containerapp create \
   --max-replicas 3 \
   --ingress external \
   --target-port $endpoint_port \
+  --secrets \
+      endpoint-security-keys=$endpoint_api_keys \
   --env-vars \
       DAPR_CLIENT_TIMEOUT_SECONDS=15 \
+      ENDPOINT_SECURITY_KEYS=secretref:endpoint-security-keys \
   --scale-rule-name http-scale-rule \
   --scale-rule-http-concurrency 50
 
