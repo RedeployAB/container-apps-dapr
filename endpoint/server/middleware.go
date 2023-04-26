@@ -11,7 +11,7 @@ func authenticate(keys map[string]struct{}, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		key := r.Header.Get(authHeader)
 		if len(key) == 0 {
-			http.Error(w, "missing auth header", http.StatusUnauthorized)
+			http.Error(w, "unauthorized", http.StatusUnauthorized)
 			return
 		}
 		if _, ok := keys[key]; !ok {
