@@ -1,15 +1,21 @@
 #!/bin/bash
 base_branch="main"
-module=endpoint
+module=""
 version=""
 version_flag=0
 major=0
 minor=0
 patch=0
+cwd=$(pwd)
 
 for arg in "$@"
 do
   case $arg in
+    --module)
+      shift
+      module=$1
+      shift
+      ;;
     --version)
       shift
       version=$1
@@ -31,6 +37,11 @@ do
   esac
 done
 
+if [[ -z "$module" ]] || [[ ! -d "$module" ]] || [[ ! -f "$module/go.mod" ]] ; then
+  echo "$module is not a valid module."
+  exit 1
+fi
+
 if [[ -z "$version" ]] && [[ $major -eq 0 ]] && [[ $minor -eq 0 ]] && [[ $patch -eq 0 ]]; then
   echo "Either specify version or kind of version increment (major, minor or patch)."
   exit 1
@@ -42,7 +53,7 @@ if [[ $major -eq 1 ]] && [[ $minor -eq 1 ]] && [[ $patch -eq 1 ]]; then
 fi
 
 if [[ -z "$version" ]]; then
-  version=$(git describe --abbrev=0 | sed -e "s/^v//g")
+  version=$(git describe --abbrev=0 | sed -e "s/^$module\/v//g")
 fi
 
 if [[ ! $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -85,9 +96,11 @@ echo "Pulling from $base_branch branch..."
 git pull
 echo ""
 
+cd $module
 echo "Running tests..."
 go test ./...
 echo ""
+cd $cwd
 
 echo "Creating and pushing tag..."
 git tag -a $tag -m "Version $version"
