@@ -27,7 +27,7 @@ cat > ./components/bindings.yaml <<EOF
 apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
-  name: reports
+  name: reports-output
 spec:
   type: bindings.redis
   version: v1

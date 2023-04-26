@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	defaultStorerName    = "reports"
+	defaultStorerName    = "reports-output"
 	defaultStorerTimeout = time.Second * 10
 )
 

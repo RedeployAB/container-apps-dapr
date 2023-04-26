@@ -21,7 +21,7 @@ const (
 
 const (
 	defaultStorerType    = storerTypeBlob
-	defaultStorerName    = "reports"
+	defaultStorerName    = "reports-output"
 	defaultStorerTimeout = time.Second * 10
 )
 
