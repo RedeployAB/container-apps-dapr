@@ -1,5 +1,4 @@
 #!/bin/bash
-
 os=linux
 arch=amd64
 module=""
