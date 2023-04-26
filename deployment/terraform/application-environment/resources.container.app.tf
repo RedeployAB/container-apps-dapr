@@ -2,10 +2,9 @@ resource "azurerm_container_app_environment" "main" {
   name                = var.container_app_environment_name
   resource_group_name = local.resource_group.name
   location            = local.resource_group.location
+  tags                = var.tags
 
   log_analytics_workspace_id = local.log_analytics_workspace_id
-
-  tags = var.tags
 }
 
 resource "azurerm_container_app_environment_dapr_component" "pubsub" {
