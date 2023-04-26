@@ -45,12 +45,19 @@ type server struct {
 	router     router
 	log        log
 	reporter   report.Service
+	security   Security
+}
+
+// Security contains keys for the authenticate middleware.
+type Security struct {
+	Keys map[string]struct{}
 }
 
 // Options for the server.
 type Options struct {
 	Logger       log
 	Reporter     report.Service
+	Security     Security
 	Host         string
 	Port         int
 	ReadTimeout  time.Duration
@@ -92,6 +99,7 @@ func New(router router, options Options) (*server, error) {
 		httpServer: srv,
 		log:        options.Logger,
 		reporter:   options.Reporter,
+		security:   options.Security,
 	}, nil
 }
 

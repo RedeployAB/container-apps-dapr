@@ -55,6 +55,11 @@ func TestNew(t *testing.T) {
 				IdleTimeout:  time.Second * 20,
 				Logger:       mockLogger{},
 				Reporter:     &mockReporter{},
+				Security: Security{
+					Keys: map[string]struct{}{
+						"key": {},
+					},
+				},
 			},
 			want: &server{
 				httpServer: &http.Server{
@@ -67,6 +72,11 @@ func TestNew(t *testing.T) {
 				router:   &mockRouter{},
 				log:      mockLogger{},
 				reporter: &mockReporter{},
+				security: Security{
+					Keys: map[string]struct{}{
+						"key": {},
+					},
+				},
 			},
 		},
 	}

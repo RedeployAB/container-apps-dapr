@@ -47,6 +47,7 @@ func TestNew(t *testing.T) {
 				"ENDPOINT_REPORTER_PUBSUB_NAME":    "reports-test",
 				"ENDPOINT_REPORTER_PUBSUB_TOPIC":   "create-test",
 				"ENDPOINT_REPORTER_PUBSUB_TIMEOUT": "5s",
+				"ENDPOINT_SECURITY_KEYS":           "key1,key2",
 			},
 			want: &Configuration{
 				Server: Server{
@@ -55,6 +56,12 @@ func TestNew(t *testing.T) {
 					ReadTimeout:  time.Second * 10,
 					WriteTimeout: time.Second * 10,
 					IdleTimeout:  time.Second * 10,
+					Security: Security{
+						Keys: map[string]struct{}{
+							"key1": {},
+							"key2": {},
+						},
+					},
 				},
 				Reporter: Reporter{
 					Type:          "pubsub-test",

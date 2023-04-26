@@ -2,10 +2,12 @@ package config
 
 import (
 	"fmt"
+	"reflect"
+	"strings"
 	"time"
 
 	"github.com/RedeployAB/container-apps-dapr/endpoint/report"
-	"github.com/caarlos0/env/v6"
+	"github.com/caarlos0/env/v8"
 )
 
 const (
@@ -35,11 +37,17 @@ type Configuration struct {
 
 // Server contains the configuration for the server.
 type Server struct {
+	Security     Security
 	Host         string        `env:"ENDPOINT_HOST"`
 	Port         int           `env:"ENDPOINT_PORT"`
 	ReadTimeout  time.Duration `env:"ENDPOINT_READ_TIMEOUT"`
 	WriteTimeout time.Duration `env:"ENDPOINT_WRITE_TIMEOUT"`
 	IdleTimeout  time.Duration `env:"ENDPOINT_IDLE_TIMEOUT"`
+}
+
+// Security contains the configuration for server security.
+type Security struct {
+	Keys map[string]struct{} `env:"ENDPOINT_SECURITY_KEYS"`
 }
 
 // Reporter contains the configuration for the reporter service.
@@ -69,7 +77,7 @@ func New() (*Configuration, error) {
 		},
 	}
 
-	if err := env.Parse(c); err != nil {
+	if err := parseEnv(c); err != nil {
 		return nil, err
 	}
 
@@ -94,4 +102,23 @@ func SetupReporter(c Reporter) (report.Service, error) {
 	}
 
 	return report.NewService(r)
+}
+
+// parseEnv parses the provided value using the env package.
+func parseEnv(v any) error {
+	return env.ParseWithOptions(v, env.Options{
+		FuncMap: map[reflect.Type]env.ParserFunc{
+			reflect.TypeOf(map[string]struct{}{}): parseStructMap,
+		},
+	})
+}
+
+// parseStructMap parses the provided comma separated string into a map[string]struct{}.
+func parseStructMap(v string) (any, error) {
+	parts := strings.Split(strings.ReplaceAll(v, " ", ""), ",")
+	m := make(map[string]struct{}, len(parts))
+	for _, v := range parts {
+		m[v] = struct{}{}
+	}
+	return m, nil
 }
