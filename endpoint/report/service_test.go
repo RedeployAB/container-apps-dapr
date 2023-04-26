@@ -4,7 +4,6 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/RedeployAB/container-apps-dapr/common/report"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -109,7 +108,7 @@ func TestService_Create(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			s := &service{r: test.input.r}
 
-			gotErr := s.Create(report.NewReport(test.input.id, test.input.data))
+			gotErr := s.Create(NewReport(test.input.id, test.input.data))
 
 			if test.wantErr != nil && gotErr == nil {
 				t.Errorf("Create = want error, got nil\n")
@@ -123,7 +122,7 @@ type mockReporter struct {
 	err error
 }
 
-func (r mockReporter) Run(report report.Report) error {
+func (r mockReporter) Run(report Report) error {
 	if r.err != nil {
 		return r.err
 	}

@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/RedeployAB/container-apps-dapr/common/report"
+	"github.com/RedeployAB/container-apps-dapr/endpoint/report"
 	"github.com/go-logr/logr"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
@@ -157,7 +157,7 @@ type mockReporter struct {
 	err error
 }
 
-func (r mockReporter) Create(report.Report) error {
+func (r mockReporter) Create(report report.Report) error {
 	if r.err != nil {
 		return r.err
 	}

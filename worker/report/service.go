@@ -2,18 +2,16 @@ package report
 
 import (
 	"errors"
-
-	"github.com/RedeployAB/container-apps-dapr/common/report"
 )
 
 // Storer is the interface that wraps around method Store.
 type Storer interface {
-	Store(r report.Report) error
+	Store(r Report) error
 }
 
 // Service is the interface that wraps around method Create.
 type Service interface {
-	Create(r report.Report) error
+	Create(r Report) error
 }
 
 // service is the implementation of the Service interface.
@@ -33,7 +31,7 @@ func NewService(s Storer) (*service, error) {
 }
 
 // Create a report and stores it at the target for the reporter.
-func (s service) Create(r report.Report) error {
+func (s service) Create(r Report) error {
 	if s.s == nil {
 		return errors.New("storer is nil")
 	}

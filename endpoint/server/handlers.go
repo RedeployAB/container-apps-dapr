@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/RedeployAB/container-apps-dapr/common/report"
+	"github.com/RedeployAB/container-apps-dapr/endpoint/report"
 )
 
 // reportHandler returns a handler for incoming reports.

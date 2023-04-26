@@ -4,7 +4,6 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/RedeployAB/container-apps-dapr/common/report"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -72,7 +71,7 @@ func TestService_Create(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			service := service{s: test.input}
 
-			gotErr := service.Create(report.Report{})
+			gotErr := service.Create(Report{})
 
 			if test.wantErr != nil && gotErr == nil {
 				t.Errorf("Create(%v) = unexpected result, want error %v, got nil\n", test.input, test.wantErr)
@@ -86,6 +85,6 @@ type mockStorer struct {
 	err error
 }
 
-func (s mockStorer) Store(r report.Report) error {
+func (s mockStorer) Store(r Report) error {
 	return s.err
 }

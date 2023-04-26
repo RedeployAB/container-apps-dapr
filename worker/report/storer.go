@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/RedeployAB/container-apps-dapr/common/report"
 	dapr "github.com/dapr/go-sdk/client"
 )
 
@@ -67,7 +66,7 @@ func newBlobStorer(options ...BlobStorerOptions) *BlobStorer {
 }
 
 // Store a report in a blob storage.
-func (s BlobStorer) Store(r report.Report) error {
+func (s BlobStorer) Store(r Report) error {
 	ctx, cancel := context.WithTimeout(context.Background(), s.timeout)
 	defer cancel()
 

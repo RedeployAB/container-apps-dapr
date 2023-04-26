@@ -6,7 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/RedeployAB/container-apps-dapr/common/report"
 	dapr "github.com/dapr/go-sdk/client"
 	"github.com/google/go-cmp/cmp"
 )
@@ -78,7 +77,7 @@ func TestBlogStorer_Store(t *testing.T) {
 				timeout: time.Second * 30,
 			}
 
-			gotErr := storer.Store(report.NewReport("123", []byte("test")))
+			gotErr := storer.Store(NewReport("123", []byte("test")))
 
 			if test.wantErr != nil && gotErr == nil {
 				t.Errorf("Store() = unexpected result, want error %v, got nil\n", test.wantErr)
