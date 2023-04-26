@@ -6,7 +6,7 @@ replace github.com/RedeployAB/container-apps-dapr/common => ../common
 
 require (
 	github.com/RedeployAB/container-apps-dapr/common v0.0.0-00010101000000-000000000000
-	github.com/caarlos0/env/v6 v6.10.1
+	github.com/caarlos0/env/v8 v8.0.0
 	github.com/dapr/go-sdk v1.7.0
 	github.com/go-logr/logr v1.2.4
 	github.com/google/go-cmp v0.5.9

@@ -32,6 +32,9 @@ func main() {
 		ReadTimeout:  cfg.Server.ReadTimeout,
 		WriteTimeout: cfg.Server.WriteTimeout,
 		IdleTimeout:  cfg.Server.IdleTimeout,
+		Security: server.Security{
+			Keys: cfg.Server.Security.Keys,
+		},
 	})
 	if err != nil {
 		log.Error(err, "Error creating server.")
