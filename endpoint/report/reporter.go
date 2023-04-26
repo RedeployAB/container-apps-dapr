@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/RedeployAB/container-apps-dapr/common/report"
 	dapr "github.com/dapr/go-sdk/client"
 )
 
@@ -77,7 +76,7 @@ func newPubsubReporter(options ...PubsubReporterOptions) *PubsubReporter {
 }
 
 // Run a report routine.
-func (r PubsubReporter) Run(report report.Report) error {
+func (r PubsubReporter) Run(report Report) error {
 	ctx, cancel := context.WithTimeout(context.Background(), r.timeout)
 	defer cancel()
 
