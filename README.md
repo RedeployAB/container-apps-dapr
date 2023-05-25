@@ -7,12 +7,12 @@ This repository contains a sample project for working with Container Apps with D
 * [Getting started](#getting-started)
   * [Prerequisites](#prerequisites)
 * [Provision environment](#provision-environment)
-  * [Terraform](#terraform)
-  * [Azure CLI](#azure-cli)
 * [Build](#build)
 * [Deploy](#deploy)
-
+  * [Push images to Azure Container Registry](#push-images-to-azure-container-registry)
+  * [Deploy Container Apps](#deploy-container-apps)
 * [Usage](#usage)
+  * [Example with curl](#example-with-curl)
 
 
 ## Getting started
