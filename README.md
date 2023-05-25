@@ -96,7 +96,7 @@ az acr login --name <name-of-azure-container-registry>
 docker tag endpoint:1.0.0 <name-of-azure-container-registry>.azurecr.io/endpoint:1.0.0
 docker push <name-of-azure-container-registry>.azurecr.io/endpoint:1.0.0
 
-# Tat the worker and push it to the registry.
+# Tag the worker and push it to the registry.
 docker tag worker:1.0.0 <name-of-azure-container-registry>.azurecr.io/worker:1.0.0
 docker push <name-of-azure-container-registry>.azurecr.io/worker:1.0.0
 ```
