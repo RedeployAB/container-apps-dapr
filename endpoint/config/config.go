@@ -19,14 +19,16 @@ const (
 )
 
 const (
+	reporterTypeQueue  = "queue"
 	reporterTypePubsub = "pubsub"
 )
 
 const (
-	defaultReporterType          = reporterTypePubsub
-	defaultReporterPubsubName    = "reports"
-	defaultReporterPubsubTopic   = "create"
-	defaultReporterPubsubTimeout = time.Second * 10
+	defaultReporterType    = reporterTypeQueue
+	defaultReporterName    = "reports"
+	defaultReporterTimeout = time.Second * 10
+	defaultReporterQueue   = "create"
+	defaultReporterTopic   = "create"
 )
 
 // Configuration contains the configuration for the application.
@@ -52,10 +54,11 @@ type Security struct {
 
 // Reporter contains the configuration for the reporter service.
 type Reporter struct {
-	Type          string        `env:"ENDPOINT_REPORTER_TYPE"`
-	PubsubName    string        `env:"ENDPOINT_REPORTER_PUBSUB_NAME"`
-	PubsubTopic   string        `env:"ENDPOINT_REPORTER_PUBSUB_TOPIC"`
-	PubsubTimeout time.Duration `env:"ENDPOINT_REPORTER_PUBSUB_TIMEOUT"`
+	Type    string        `env:"ENDPOINT_REPORTER_TYPE"`
+	Name    string        `env:"ENDPOINT_REPORTER_NAME"`
+	Timeout time.Duration `env:"ENDPOINT_REPORTER_TIMEOUT"`
+	Queue   string        `env:"ENDPOINT_REPORTER_QUEUE"`
+	Topic   string        `env:"ENDPOINT_REPORTER_TOPIC"`
 }
 
 // New creates a new *Configuration based on environment variables
@@ -70,10 +73,11 @@ func New() (*Configuration, error) {
 			IdleTimeout:  defaultIdleTimeout,
 		},
 		Reporter: Reporter{
-			Type:          defaultReporterType,
-			PubsubName:    defaultReporterPubsubName,
-			PubsubTopic:   defaultReporterPubsubTopic,
-			PubsubTimeout: defaultReporterPubsubTimeout,
+			Type:    defaultReporterType,
+			Name:    defaultReporterName,
+			Timeout: defaultReporterTimeout,
+			Queue:   defaultReporterQueue,
+			Topic:   defaultReporterTopic,
 		},
 	}
 
@@ -90,9 +94,18 @@ func SetupReporter(c Reporter) (report.Service, error) {
 	var err error
 	if c.Type == reporterTypePubsub {
 		r, err = report.NewPubsubReporter(report.PubsubReporterOptions{
-			Name:    c.PubsubName,
-			Topic:   c.PubsubTopic,
-			Timeout: c.PubsubTimeout,
+			Name:    c.Name,
+			Topic:   c.Topic,
+			Timeout: c.Timeout,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("setup service: %w", err)
+		}
+	} else if c.Type == reporterTypeQueue {
+		r, err = report.NewQueueReporter(report.QueueReporterOptions{
+			Name:    c.Name,
+			Queue:   c.Queue,
+			Timeout: c.Timeout,
 		})
 		if err != nil {
 			return nil, fmt.Errorf("setup service: %w", err)
