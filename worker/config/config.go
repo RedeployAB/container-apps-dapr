@@ -9,10 +9,20 @@ import (
 )
 
 const (
-	defaultHost  = "0.0.0.0"
-	defaultPort  = 3001
+	defaultHost = "0.0.0.0"
+	defaultPort = 3001
+)
+
+const (
+	typeServerQueue  = "queue"
+	typeServerPubsub = "pubsub"
+)
+
+const (
+	defaultType  = typeServerQueue
 	defaultName  = "reports"
 	defaultTopic = "create"
+	defaultQueue = "create"
 )
 
 const (
@@ -35,7 +45,9 @@ type Configuration struct {
 type Server struct {
 	Host  string `env:"WORKER_HOST"`
 	Port  int    `env:"WORKER_PORT"`
+	Type  string `env:"WORKER_TYPE"`
 	Name  string `env:"WORKER_NAME"`
+	Queue string `env:"WORKER_QUEUE"`
 	Topic string `env:"WORKER_TOPIC"`
 }
 
@@ -53,7 +65,9 @@ func New() (*Configuration, error) {
 		Server: Server{
 			Host:  defaultHost,
 			Port:  defaultPort,
+			Type:  defaultType,
 			Name:  defaultName,
+			Queue: defaultQueue,
 			Topic: defaultTopic,
 		},
 		Storer: Storer{
