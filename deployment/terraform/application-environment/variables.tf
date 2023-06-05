@@ -72,8 +72,6 @@ variable "servicebus_name" {
   description = "Name of the service bus for pubsub binding."
 }
 
-
-
 variable "container_registry_name" {
   type        = string
   description = "Name of the container registry for the container app environment."
