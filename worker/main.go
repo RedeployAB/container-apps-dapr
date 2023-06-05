@@ -30,8 +30,8 @@ func main() {
 		Address:  cfg.Server.Host + ":" + strconv.Itoa(cfg.Server.Port),
 		Type:     server.Type(cfg.Server.Type),
 		Name:     cfg.Server.Name,
-		Topic:    cfg.Server.Topic,
 		Queue:    cfg.Server.Queue,
+		Topic:    cfg.Server.Topic,
 	})
 	if err != nil {
 		log.Error(err, "Error creating server.")

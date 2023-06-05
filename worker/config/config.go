@@ -21,8 +21,8 @@ const (
 const (
 	defaultType  = typeServerQueue
 	defaultName  = "reports"
-	defaultTopic = "create"
 	defaultQueue = "create"
+	defaultTopic = "create"
 )
 
 const (
