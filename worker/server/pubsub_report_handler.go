@@ -9,8 +9,8 @@ import (
 	"github.com/dapr/go-sdk/service/common"
 )
 
-// reportHandler is the handler for the report topic.
-func (s server) reportHandler(ctx context.Context, e *common.TopicEvent) (retry bool, err error) {
+// pubsubReportHandler is the handler for the report topic.
+func (s server) pubsubReportHandler(ctx context.Context, e *common.TopicEvent) (retry bool, err error) {
 	s.log.Info("Event received.", "id", e.ID, "pubsub", e.PubsubName, "topic", e.Topic)
 
 	data, ok := e.Data.(string)

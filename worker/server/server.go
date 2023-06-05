@@ -2,6 +2,7 @@ package server
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -16,9 +17,19 @@ const (
 	defaultAddress = "0.0.0.0:3001"
 )
 
+// Type is the type of the server.
+type Type string
+
 const (
-	defaultPubsubName  = "reports"
-	defaultPubsubTopic = "create"
+	TypeQueue  Type = "queue"
+	TypePubsub Type = "pubsub"
+)
+
+const (
+	defaultType  = TypeQueue
+	defaultName  = "reports"
+	defaultQueue = "create"
+	defaultTopic = "create"
 )
 
 // log is the interface that wraps around methods Error and Info.
@@ -32,6 +43,7 @@ type log interface {
 type service interface {
 	Start() error
 	Stop() error
+	AddBindingInvocationHandler(name string, fn common.BindingInvocationHandler) error
 	AddTopicEventHandler(sub *common.Subscription, fn common.TopicEventHandler) error
 }
 
@@ -43,6 +55,7 @@ type server struct {
 	log      log
 	address  string
 	name     string
+	queue    string
 	topic    string
 }
 
@@ -50,8 +63,10 @@ type server struct {
 type Options struct {
 	Reporter report.Service
 	Logger   log
+	Type     Type
 	Address  string
 	Name     string
+	Queue    string
 	Topic    string
 }
 
@@ -68,14 +83,22 @@ func New(options Options) (*server, error) {
 	}
 	s.service = ds
 
-	subscription := &common.Subscription{
-		PubsubName: s.name,
-		Topic:      s.topic,
-		Route:      "/" + s.name,
-	}
+	if options.Type == TypeQueue {
+		if err := s.service.AddBindingInvocationHandler(s.name, s.queueReportHandler); err != nil {
+			return nil, errors.New("adding binding handler: " + err.Error())
+		}
+	} else if options.Type == TypePubsub {
+		subscription := &common.Subscription{
+			PubsubName: s.name,
+			Topic:      s.topic,
+			Route:      "/" + s.name,
+		}
 
-	if err := s.service.AddTopicEventHandler(subscription, s.reportHandler); err != nil {
-		return nil, errors.New("adding event handler: " + err.Error())
+		if err := s.service.AddTopicEventHandler(subscription, s.pubsubReportHandler); err != nil {
+			return nil, errors.New("adding event handler: " + err.Error())
+		}
+	} else {
+		return nil, fmt.Errorf("unsupported type: %v", options.Type)
 	}
 
 	return s, nil
@@ -92,12 +115,14 @@ func new(options Options) (*server, error) {
 	if options.Logger == nil {
 		options.Logger = logger.New()
 	}
-
 	if len(options.Name) == 0 {
-		options.Name = defaultPubsubName
+		options.Name = defaultName
+	}
+	if len(options.Queue) == 0 {
+		options.Queue = defaultQueue
 	}
 	if len(options.Topic) == 0 {
-		options.Topic = defaultPubsubTopic
+		options.Topic = defaultTopic
 	}
 
 	return &server{
@@ -105,6 +130,7 @@ func new(options Options) (*server, error) {
 		log:      options.Logger,
 		address:  options.Address,
 		name:     options.Name,
+		queue:    options.Queue,
 		topic:    options.Topic,
 	}, nil
 }

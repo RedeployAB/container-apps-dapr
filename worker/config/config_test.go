@@ -23,7 +23,9 @@ func TestNew(t *testing.T) {
 				Server: Server{
 					Host:  defaultHost,
 					Port:  defaultPort,
+					Type:  defaultType,
 					Name:  defaultName,
+					Queue: defaultQueue,
 					Topic: defaultTopic,
 				},
 				Storer: Storer{
@@ -39,6 +41,8 @@ func TestNew(t *testing.T) {
 				"WORKER_HOST":           "localhost",
 				"WORKER_PORT":           "3001",
 				"WORKER_NAME":           "reports-test",
+				"WORKER_TYPE":           "pubsub",
+				"WORKER_QUEUE":          "create-test",
 				"WORKER_TOPIC":          "create-test",
 				"WORKER_STORER_TYPE":    "blob-test",
 				"WORKER_STORER_NAME":    "reports-test",
@@ -48,7 +52,9 @@ func TestNew(t *testing.T) {
 				Server: Server{
 					Host:  "localhost",
 					Port:  3001,
+					Type:  "pubsub",
 					Name:  "reports-test",
+					Queue: "create-test",
 					Topic: "create-test",
 				},
 				Storer: Storer{

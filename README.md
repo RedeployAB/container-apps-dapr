@@ -58,6 +58,8 @@ servicebus_name                = "<name-of-servicebus-namespace>"
 container_registry_name        = "<name-of-azure-container-registry>"
 container_app_environment_name = "<name-of-container-app-environment>"
 
+// Messaging system to use. Options are "queue" or "pubsub".
+messaging_system   = "queue"
 // Name of the applications in the project.
 pubsub_dapr_scopes = ["endpoint", "worker"]
 // Name of the "worker" application of the project.
@@ -114,6 +116,7 @@ uuid=$(uuidgen)
   --identity <name-of-identity> \
   --registry <name-of-azure-container-registry>.azurecr.io \
   --servicebus-namespace <name-of-servicebus-namespace> \
+  --messaging-system queue \  # Supports 'pubsub' deployments. Defaults to 'queue' if omitted.
   --endpoint-version 1.0.0 \
   --worker-version 1.0.0 \
   --endpoint-api-keys $uuid

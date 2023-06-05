@@ -72,12 +72,6 @@ variable "servicebus_name" {
   description = "Name of the service bus for pubsub binding."
 }
 
-variable "servicebus_namespace_authorization_rule_name" {
-  type        = string
-  default     = "pubsub-scaling"
-  description = "Name of the service bus namespace authorization rule for pubsub binding scaling rules."
-}
-
 variable "container_registry_name" {
   type        = string
   description = "Name of the container registry for the container app environment."
@@ -88,14 +82,22 @@ variable "container_app_environment_name" {
   description = "Name of the container app environment."
 }
 
-variable "pubsub_dapr_scopes" {
+variable "messaging_system" {
+  type = string
+  validation {
+    condition     = contains(["queue", "pubsub"], lower(var.messaging_system))
+    error_message = "Invalid messaging system. Valid values are: queue, pubsub."
+  }
+}
+
+variable "messaging_dapr_scopes" {
   type        = list(string)
-  description = "Comma separated list of container apps (names) for the pubsub binding."
+  description = "Comma separated list of container apps (names) for the messaging DAPR scopes."
 }
 
 variable "output_dapr_scopes" {
   type        = list(string)
-  description = "Comma separated list of container apps (names) for the output binding."
+  description = "Comma separated list of container apps (names) for the output binding DAPR scopes."
 }
 
 variable "tags" {

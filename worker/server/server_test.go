@@ -35,8 +35,9 @@ func TestServerNew(t *testing.T) {
 				reporter: &mockReporter{},
 				log:      logr.Logger{},
 				address:  defaultAddress,
-				name:     defaultPubsubName,
-				topic:    defaultPubsubTopic,
+				name:     defaultName,
+				queue:    defaultQueue,
+				topic:    defaultTopic,
 			},
 			wantErr: nil,
 		},
@@ -47,6 +48,7 @@ func TestServerNew(t *testing.T) {
 				Logger:   &mockLogger{},
 				Address:  "localhost:3002",
 				Name:     "reports-test",
+				Queue:    "create-test",
 				Topic:    "create-test",
 			},
 			want: &server{
@@ -54,6 +56,7 @@ func TestServerNew(t *testing.T) {
 				log:      &mockLogger{},
 				address:  "localhost:3002",
 				name:     "reports-test",
+				queue:    "create-test",
 				topic:    "create-test",
 			},
 		},
@@ -120,6 +123,10 @@ func (s mockService) Start() error {
 
 func (s mockService) Stop() error {
 	return s.stopErr
+}
+
+func (s mockService) AddBindingInvocationHandler(name string, fn common.BindingInvocationHandler) error {
+	return s.err
 }
 
 func (s mockService) AddTopicEventHandler(sub *common.Subscription, fn common.TopicEventHandler) error {
