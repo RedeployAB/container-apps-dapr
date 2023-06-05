@@ -28,8 +28,8 @@ const (
 const (
 	defaultType  = TypeQueue
 	defaultName  = "reports"
-	defaultTopic = "create"
 	defaultQueue = "create"
+	defaultTopic = "create"
 )
 
 // log is the interface that wraps around methods Error and Info.
