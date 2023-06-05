@@ -5,7 +5,7 @@ environment=$CONTAINER_APP_ENVIRONMENT_NAME
 identity_name=$IDENTITY_NAME
 registry=$REGISTRY_FQDN
 servicebus_namespace=$SERVICEBUS_NAMESPACE
-messaging_type="queue"
+messaging_system="queue"
 
 endpoint_name="endpoint"
 endpoint_version=1.0.0
@@ -49,9 +49,9 @@ do
       servicebus_namespace_authorization_rule=$1
       shift
       ;;
-    --messaging-type)
+    --messaging-system)
       shift
-      messaging_type=$1
+      messaging_system=$1
       shift
       ;;
     --endpoint-version)
@@ -109,7 +109,7 @@ worker_scale_rule=(
    "--scale-rule-auth connection=servicebus-connection-string"
 )
 
-case $messaging_type in
+case $messaging_system in
   "queue")
     worker_scale_rule+=("--scale-rule-name queue-scale-rule" "--scale-rule-metadata namespace=$servicebus_namespace queueName=create messageCount=1")
     servicebus_namespace_authorization_rule="queue-scaling"
@@ -119,7 +119,7 @@ case $messaging_type in
     servicebus_namespace_authorization_rule="topic-scaling"
     ;;
   *)
-    echo "Invalid worker scale rule type: $messaging_type."
+    echo "Invalid worker scale rule type: $messaging_system."
     exit 1
     ;;
 esac
@@ -156,7 +156,7 @@ az containerapp create \
       endpoint-security-keys=$endpoint_api_keys \
   --env-vars \
       ENDPOINT_SECURITY_KEYS=secretref:endpoint-security-keys \
-      ENDPOINT_REPORTER_TYPE=$messaging_type \
+      ENDPOINT_REPORTER_TYPE=$messaging_system \
       DAPR_CLIENT_TIMEOUT_SECONDS=15 \
   --scale-rule-name http-scale-rule \
   --scale-rule-http-concurrency 50
@@ -183,6 +183,6 @@ az containerapp create \
   --secrets \
       servicebus-connection-string=$servicebus_connection_string \
   --env-vars \
-      WORKER_TYPE=$messaging_type \
+      WORKER_TYPE=$messaging_system \
       DAPR_CLIENT_TIMEOUT_SECONDS=15 \
    ${worker_scale_rule[@]}
