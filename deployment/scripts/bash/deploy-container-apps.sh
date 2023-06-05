@@ -5,6 +5,7 @@ environment=$CONTAINER_APP_ENVIRONMENT_NAME
 identity_name=$IDENTITY_NAME
 registry=$REGISTRY_FQDN
 servicebus_namespace=$SERVICEBUS_NAMESPACE
+messaging_type="queue"
 
 endpoint_name="endpoint"
 endpoint_version=1.0.0
@@ -14,7 +15,6 @@ endpoint_api_keys=""
 worker_name="worker"
 worker_version=1.0.0
 worker_port=3001
-worker_scale_rule_type="queue"
 
 for arg in "$@"
 do
@@ -49,9 +49,9 @@ do
       servicebus_namespace_authorization_rule=$1
       shift
       ;;
-    --worker-scale-rule-type)
+    --messaging-type)
       shift
-      worker_scale_rule_type=$1
+      messaging_type=$1
       shift
       ;;
     --endpoint-version)
@@ -109,17 +109,17 @@ worker_scale_rule=(
    "--scale-rule-auth connection=servicebus-connection-string"
 )
 
-case $worker_scale_rule_type in
+case $messaging_type in
   "queue")
     worker_scale_rule+=("--scale-rule-name queue-scale-rule" "--scale-rule-metadata namespace=$servicebus_namespace queueName=create messageCount=1")
     servicebus_namespace_authorization_rule="queue-scaling"
     ;;
-  "topic")
+  "pubsub")
     worker_scale_rule+=("--scale-rule-name topic-scale-rule" "--scale-rule-metadata namespace=$servicebus_namespace subscriptionName=$worker_name topicName=create")
     servicebus_namespace_authorization_rule="topic-scaling"
     ;;
   *)
-    echo "Invalid worker scale rule type: $worker_scale_rule_type"
+    echo "Invalid worker scale rule type: $messaging_type."
     exit 1
     ;;
 esac
@@ -156,6 +156,7 @@ az containerapp create \
       endpoint-security-keys=$endpoint_api_keys \
   --env-vars \
       ENDPOINT_SECURITY_KEYS=secretref:endpoint-security-keys \
+      ENDPOINT_REPORTER_TYPE=$messaging_type \
       DAPR_CLIENT_TIMEOUT_SECONDS=15 \
   --scale-rule-name http-scale-rule \
   --scale-rule-http-concurrency 50
@@ -182,5 +183,6 @@ az containerapp create \
   --secrets \
       servicebus-connection-string=$servicebus_connection_string \
   --env-vars \
+      WORKER_TYPE=$messaging_type \
       DAPR_CLIENT_TIMEOUT_SECONDS=15 \
    ${worker_scale_rule[@]}
