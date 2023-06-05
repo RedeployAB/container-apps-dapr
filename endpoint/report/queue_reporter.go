@@ -73,11 +73,11 @@ func (r QueueReporter) Run(report Report) error {
 	defer cancel()
 
 	return r.InvokeOutputBinding(ctx, &dapr.InvokeBindingRequest{
-		Name:      "reports",
-		Operation: r.queue,
+		Name:      r.name,
+		Operation: "create",
 		Data:      report.JSON(),
 		Metadata: map[string]string{
-			"queueName": "reports",
+			"queueName": r.queue,
 		},
 	})
 }
