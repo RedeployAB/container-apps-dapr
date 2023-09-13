@@ -89,9 +89,9 @@ func SetupReporter(c Storer) (report.Service, error) {
 	var err error
 	var storer report.Storer
 	if c.Type == storerTypeBlob {
-		storer, err = report.NewBlobStorer(report.BlobStorerOptions{
-			Name:    c.Name,
-			Timeout: c.Timeout,
+		storer, err = report.NewBlobStorer(func(o *report.BlobStorerOptions) {
+			o.Name = c.Name
+			o.Timeout = c.Timeout
 		})
 		if err != nil {
 			return nil, fmt.Errorf("setup service: %w", err)

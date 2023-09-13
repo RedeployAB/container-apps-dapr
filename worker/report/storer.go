@@ -30,8 +30,11 @@ type BlobStorerOptions struct {
 	Timeout time.Duration
 }
 
+// BlobStorerOption is a function that sets *BlobStorerOptions.
+type BlobStorerOption func(o *BlobStorerOptions)
+
 // NewBlobStorer creates a BlobStorer with the provided options.
-func NewBlobStorer(options ...BlobStorerOptions) (*BlobStorer, error) {
+func NewBlobStorer(options ...BlobStorerOption) (*BlobStorer, error) {
 	client, err := dapr.NewClient()
 	if err != nil {
 		return nil, err
@@ -44,19 +47,14 @@ func NewBlobStorer(options ...BlobStorerOptions) (*BlobStorer, error) {
 }
 
 // newBlobStorer creates a new *BlobStorer with the provided options.
-func newBlobStorer(options ...BlobStorerOptions) *BlobStorer {
+func newBlobStorer(options ...BlobStorerOption) *BlobStorer {
 	opts := BlobStorerOptions{
 		Name:    defaultStorerName,
 		Timeout: defaultStorerTimeout,
 	}
 
-	for _, o := range options {
-		if len(o.Name) > 0 {
-			opts.Name = o.Name
-		}
-		if o.Timeout > 0 {
-			opts.Timeout = o.Timeout
-		}
+	for _, option := range options {
+		option(&opts)
 	}
 
 	return &BlobStorer{

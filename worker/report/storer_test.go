@@ -13,13 +13,13 @@ import (
 func TestNewBlobStorer(t *testing.T) {
 	var tests = []struct {
 		name    string
-		input   BlobStorerOptions
+		input   []BlobStorerOption
 		want    *BlobStorer
 		wantErr error
 	}{
 		{
 			name:  "With empty options",
-			input: BlobStorerOptions{},
+			input: []BlobStorerOption{},
 			want: &BlobStorer{
 				client:  nil,
 				name:    defaultStorerName,
@@ -28,9 +28,11 @@ func TestNewBlobStorer(t *testing.T) {
 		},
 		{
 			name: "With options",
-			input: BlobStorerOptions{
-				Name:    "test",
-				Timeout: time.Second * 30,
+			input: []BlobStorerOption{
+				func(o *BlobStorerOptions) {
+					o.Name = "test"
+					o.Timeout = time.Second * 30
+				},
 			},
 			want: &BlobStorer{
 				client:  nil,
@@ -42,7 +44,7 @@ func TestNewBlobStorer(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			got := newBlobStorer(test.input)
+			got := newBlobStorer(test.input...)
 
 			if diff := cmp.Diff(test.want, got, cmp.AllowUnexported(BlobStorer{})); diff != "" {
 				t.Errorf("newBlobStorer(%+v) = unexpected result (-want +got):\n%s\n", test.input, diff)

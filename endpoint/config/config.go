@@ -93,19 +93,19 @@ func SetupReporter(c Reporter) (report.Service, error) {
 	var r report.Reporter
 	var err error
 	if c.Type == reporterTypePubsub {
-		r, err = report.NewPubsubReporter(report.PubsubReporterOptions{
-			Name:    c.Name,
-			Topic:   c.Topic,
-			Timeout: c.Timeout,
+		r, err = report.NewPubsubReporter(func(o *report.PubsubReporterOptions) {
+			o.Name = c.Name
+			o.Topic = c.Topic
+			o.Timeout = c.Timeout
 		})
 		if err != nil {
 			return nil, fmt.Errorf("setup service: %w", err)
 		}
 	} else if c.Type == reporterTypeQueue {
-		r, err = report.NewQueueReporter(report.QueueReporterOptions{
-			Name:    c.Name,
-			Queue:   c.Queue,
-			Timeout: c.Timeout,
+		r, err = report.NewQueueReporter(func(o *report.QueueReporterOptions) {
+			o.Name = c.Name
+			o.Queue = c.Queue
+			o.Timeout = c.Timeout
 		})
 		if err != nil {
 			return nil, fmt.Errorf("setup service: %w", err)

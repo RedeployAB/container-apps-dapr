@@ -11,7 +11,7 @@ import (
 func TestNewQueueReporter(t *testing.T) {
 	var tests = []struct {
 		name  string
-		input []QueueReporterOptions
+		input []QueueReporterOption
 		want  *QueueReporter
 	}{
 		{
@@ -25,11 +25,11 @@ func TestNewQueueReporter(t *testing.T) {
 		},
 		{
 			name: "With options",
-			input: []QueueReporterOptions{
-				{
-					Name:    "name",
-					Queue:   "queue",
-					Timeout: time.Second * 5,
+			input: []QueueReporterOption{
+				func(o *QueueReporterOptions) {
+					o.Name = "name"
+					o.Queue = "queue"
+					o.Timeout = time.Second * 5
 				},
 			},
 			want: &QueueReporter{
