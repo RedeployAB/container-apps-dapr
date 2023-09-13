@@ -26,9 +26,12 @@ type PubsubReporterOptions struct {
 	Timeout time.Duration
 }
 
+// PubsubReporterOption is a function that sets *PubsubReporterOptions.
+type PubsubReporterOption func(o *PubsubReporterOptions)
+
 // NewPubsubReporter creates a new *PubsubReporter with the provided address
 // and options.
-func NewPubsubReporter(options ...PubsubReporterOptions) (*PubsubReporter, error) {
+func NewPubsubReporter(options ...PubsubReporterOption) (*PubsubReporter, error) {
 	client, err := dapr.NewClient()
 	if err != nil {
 		return nil, err
@@ -42,23 +45,15 @@ func NewPubsubReporter(options ...PubsubReporterOptions) (*PubsubReporter, error
 
 // newPubsubReporter creates a new *PubsubReporter with the provided address and
 // options.
-func newPubsubReporter(options ...PubsubReporterOptions) *PubsubReporter {
+func newPubsubReporter(options ...PubsubReporterOption) *PubsubReporter {
 	opts := PubsubReporterOptions{
 		Name:    defaultReporterName,
 		Topic:   defaultReporterTopic,
 		Timeout: defaultReporterTimeout,
 	}
 
-	for _, o := range options {
-		if len(o.Name) > 0 {
-			opts.Name = o.Name
-		}
-		if len(o.Topic) > 0 {
-			opts.Topic = o.Topic
-		}
-		if o.Timeout > 0 {
-			opts.Timeout = o.Timeout
-		}
+	for _, option := range options {
+		option(&opts)
 	}
 
 	return &PubsubReporter{

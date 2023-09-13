@@ -26,9 +26,12 @@ type QueueReporterOptions struct {
 	Timeout time.Duration
 }
 
+// QueueReporterOption is a function that sets *QueueReporterOptions.
+type QueueReporterOption func(o *QueueReporterOptions)
+
 // NewQueueReporter creates a new *QueueReporter with the provided address
 // and options.
-func NewQueueReporter(options ...QueueReporterOptions) (*QueueReporter, error) {
+func NewQueueReporter(options ...QueueReporterOption) (*QueueReporter, error) {
 	client, err := dapr.NewClient()
 	if err != nil {
 		return nil, err
@@ -42,24 +45,17 @@ func NewQueueReporter(options ...QueueReporterOptions) (*QueueReporter, error) {
 
 // newQueueReporter creates a new *QueueReporter with the provided address and
 // options.
-func newQueueReporter(options ...QueueReporterOptions) *QueueReporter {
+func newQueueReporter(options ...QueueReporterOption) *QueueReporter {
 	opts := QueueReporterOptions{
 		Name:    defaultReporterName,
 		Queue:   defaultReporterQueue,
 		Timeout: defaultReporterTimeout,
 	}
 
-	for _, o := range options {
-		if len(o.Name) > 0 {
-			opts.Name = o.Name
-		}
-		if len(o.Queue) > 0 {
-			opts.Queue = o.Queue
-		}
-		if o.Timeout > 0 {
-			opts.Timeout = o.Timeout
-		}
+	for _, option := range options {
+		option(&opts)
 	}
+
 	return &QueueReporter{
 		name:    opts.Name,
 		queue:   opts.Queue,

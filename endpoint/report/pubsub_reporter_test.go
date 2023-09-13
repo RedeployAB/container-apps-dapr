@@ -11,7 +11,7 @@ import (
 func TestNewPubsubReporter(t *testing.T) {
 	var tests = []struct {
 		name  string
-		input []PubsubReporterOptions
+		input []PubsubReporterOption
 		want  *PubsubReporter
 	}{
 		{
@@ -25,11 +25,11 @@ func TestNewPubsubReporter(t *testing.T) {
 		},
 		{
 			name: "With options",
-			input: []PubsubReporterOptions{
-				{
-					Name:    "name",
-					Topic:   "topic",
-					Timeout: time.Second * 5,
+			input: []PubsubReporterOption{
+				func(o *PubsubReporterOptions) {
+					o.Name = "name"
+					o.Topic = "topic"
+					o.Timeout = time.Second * 5
 				},
 			},
 			want: &PubsubReporter{
