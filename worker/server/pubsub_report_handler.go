@@ -15,18 +15,18 @@ func (s server) pubsubReportHandler(ctx context.Context, e *common.TopicEvent) (
 
 	data, ok := e.Data.(string)
 	if !ok {
-		s.log.Error(fmt.Errorf("Failed to convert data to string."), "Failed to cast data to string.", "id", e.ID, "pubsub", e.PubsubName, "topic", e.Topic)
+		s.log.Error("Failed to cast data to string.", "error", fmt.Errorf("Failed to convert data to string."), "id", e.ID, "pubsub", e.PubsubName, "topic", e.Topic)
 		return false, err
 	}
 
 	var r report.Report
 	if err := json.Unmarshal([]byte(data), &r); err != nil {
-		s.log.Error(err, "Failed to deserialize report.", "id", e.ID, "pubsub", e.PubsubName, "topic", e.Topic)
+		s.log.Error("Failed to deserialize report.", "error", err, "id", e.ID, "pubsub", e.PubsubName, "topic", e.Topic)
 		return false, err
 	}
 
 	if err := s.reporter.Create(r); err != nil {
-		s.log.Error(err, "Failed to create report.", "id", e.ID, "pubsub", e.PubsubName, "topic", e.Topic)
+		s.log.Error("Failed to create report.", "error", err, "id", e.ID, "pubsub", e.PubsubName, "topic", e.Topic)
 		return false, err
 	}
 	s.log.Info("Report created.", "id", e.ID, "pubsub", e.PubsubName, "topic", e.Topic)

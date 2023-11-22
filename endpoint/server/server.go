@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -10,7 +11,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/RedeployAB/container-apps-dapr/common/logger"
 	"github.com/RedeployAB/container-apps-dapr/endpoint/report"
 )
 
@@ -28,8 +28,8 @@ const (
 
 // log is the interface that wraps around methods Error and Info.
 type log interface {
-	Error(err error, msg string, keysAndValues ...any)
-	Info(msg string, keysAndValues ...any)
+	Error(msg string, args ...any)
+	Info(msg string, args ...any)
 }
 
 // router is the interface that wraps around methods Handle and ServeHTTP.
@@ -83,7 +83,7 @@ func New(router router, options Options) (*server, error) {
 		options.IdleTimeout = defaultIdleTimeout
 	}
 	if options.Logger == nil {
-		options.Logger = logger.New()
+		options.Logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	}
 
 	srv := &http.Server{
@@ -108,14 +108,14 @@ func (s server) Start() {
 	s.routes()
 	go func() {
 		if err := s.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			s.log.Error(err, "Server failed to start.")
+			s.log.Error("Server failed to start.", "error", err)
 			os.Exit(1)
 		}
 	}()
 	s.log.Info("Server started.", "type", "server", "address", s.httpServer.Addr)
 	sig, err := s.stop()
 	if err != nil {
-		s.log.Error(err, "Error stopping server.")
+		s.log.Error("Error stopping server.", "error", err)
 	}
 	s.log.Info("Server stopped.", "type", "server", "reason", sig.String())
 }

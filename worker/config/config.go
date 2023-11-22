@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/RedeployAB/container-apps-dapr/worker/report"
-	"github.com/caarlos0/env/v8"
+	"github.com/caarlos0/env/v10"
 )
 
 const (

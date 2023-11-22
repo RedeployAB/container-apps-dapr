@@ -2,6 +2,7 @@ package server
 
 import (
 	"errors"
+	"log/slog"
 	"net/http"
 	"strconv"
 	"syscall"
@@ -9,7 +10,6 @@ import (
 	"time"
 
 	"github.com/RedeployAB/container-apps-dapr/endpoint/report"
-	"github.com/go-logr/logr"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 )
@@ -41,7 +41,7 @@ func TestNew(t *testing.T) {
 					IdleTimeout:  defaultIdleTimeout,
 				},
 				router:   &mockRouter{},
-				log:      logr.Logger{},
+				log:      &slog.Logger{},
 				reporter: &mockReporter{},
 			},
 		},
@@ -85,7 +85,7 @@ func TestNew(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			got, gotErr := New(&mockRouter{}, test.input)
 
-			if diff := cmp.Diff(test.want, got, cmp.AllowUnexported(server{}, mockReporter{}), cmpopts.IgnoreUnexported(http.Server{}, logr.Logger{})); diff != "" {
+			if diff := cmp.Diff(test.want, got, cmp.AllowUnexported(server{}, mockReporter{}), cmpopts.IgnoreUnexported(http.Server{}, slog.Logger{})); diff != "" {
 				t.Errorf("New(%+v) = unexpected result, (-want, +got)\n%s\n", test.input, diff)
 			}
 
@@ -145,11 +145,11 @@ type mockLogger struct{}
 
 var logMessages = []string{}
 
-func (l mockLogger) Error(err error, msg string, keysAndValues ...any) {
+func (l mockLogger) Error(msg string, args ...any) {
 	logMessages = append(logMessages, msg)
 }
 
-func (l mockLogger) Info(msg string, keysAndValues ...any) {
+func (l mockLogger) Info(msg string, args ...any) {
 	logMessages = append(logMessages, msg)
 }
 

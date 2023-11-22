@@ -3,11 +3,11 @@ package server
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/RedeployAB/container-apps-dapr/common/logger"
 	"github.com/RedeployAB/container-apps-dapr/worker/report"
 	"github.com/dapr/go-sdk/service/common"
 	daprd "github.com/dapr/go-sdk/service/grpc"
@@ -34,8 +34,8 @@ const (
 
 // log is the interface that wraps around methods Error and Info.
 type log interface {
-	Error(err error, msg string, keysAndValues ...any)
-	Info(msg string, keysAndValues ...any)
+	Error(msg string, args ...any)
+	Info(msg string, args ...any)
 }
 
 // service is the interface that wraps around methods Start, Stop and
@@ -113,7 +113,7 @@ func new(options Options) (*server, error) {
 		options.Address = defaultAddress
 	}
 	if options.Logger == nil {
-		options.Logger = logger.New()
+		options.Logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	}
 	if len(options.Name) == 0 {
 		options.Name = defaultName
@@ -139,14 +139,14 @@ func new(options Options) (*server, error) {
 func (s server) Start() {
 	go func() {
 		if err := s.service.Start(); err != nil {
-			s.log.Error(err, "Server failed to start.")
+			s.log.Error("Server failed to start.", "error", err)
 			os.Exit(1)
 		}
 	}()
 	s.log.Info("Server started.", "type", "server", "address", s.address)
 	sig, err := s.stop()
 	if err != nil {
-		s.log.Error(err, "Error stopping server.")
+		s.log.Error("Error stopping server.", "error", err)
 	}
 	s.log.Info("Server stopped.", "type", "server", "reason", sig.String())
 }
