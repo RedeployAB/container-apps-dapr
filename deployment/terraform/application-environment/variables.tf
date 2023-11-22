@@ -82,6 +82,47 @@ variable "container_app_environment_name" {
   description = "Name of the container app environment."
 }
 
+variable "provision_container_apps" {
+  type    = bool
+  default = false
+}
+
+variable "endpoint_container_app" {
+  type = object({
+    name         = optional(string, "endpoint")
+    image        = optional(string, "endpoint:1.0.0")
+    cpu          = optional(number, 0.25)
+    memory       = optional(string, "0.5Gi")
+    port         = optional(number, 3000)
+    min_replicas = optional(number, 0)
+    max_replicas = optional(number, 3)
+  })
+  default = {
+    name = "endpoint"
+  }
+}
+
+variable "endpoint_security_keys" {
+  type      = list(string)
+  sensitive = true
+  default   = []
+}
+
+variable "worker_container_app" {
+  type = object({
+    name         = optional(string, "worker")
+    image        = optional(string, "worker:1.0.0")
+    cpu          = optional(number, 0.25)
+    memory       = optional(string, "0.5Gi")
+    port         = optional(number, 3001)
+    min_replicas = optional(number, 0)
+    max_replicas = optional(number, 3)
+  })
+  default = {
+    name = "worker"
+  }
+}
+
 variable "messaging_system" {
   type = string
   validation {
