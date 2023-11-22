@@ -20,7 +20,7 @@ This repository contains a sample project for working with Container Apps with D
 ### Prerequisites
 
 * Azure account (with at least Contributor role on a resource group)
-* Go >=1.20
+* Go >=1.21
 * Terraform >=1.4.0
 * Azure CLI >=2.45.0
 
