@@ -35,7 +35,7 @@ git clone https://github.com/RedeployAB/container-apps-dapr.git
 Create a variables file for the environment like so:
 
 ```sh
-touch deploy/terraform/terraform.tfvars
+touch deployments/terraform/application-environment/terraform.tfvars
 ```
 
 Add the following variables to the file:
@@ -53,23 +53,25 @@ log_analytics_workspace_name  = "<name-of-log-analytics>"
  // Set this to deploy to an existing workspace.
 log_analytics_workspace_id    = "<log-analytics-workspace-id>"
 
-storage_account_name           = "<name-of-storage-account>"
-servicebus_name                = "<name-of-servicebus-namespace>"
-container_registry_name        = "<name-of-azure-container-registry>"
+storage_account_name    = "<name-of-storage-account>"
+servicebus_name         = "<name-of-servicebus-namespace>"
+container_registry_name = "<name-of-azure-container-registry>"
+
 container_app_environment_name = "<name-of-container-app-environment>"
+provision_container_apps       = false
 
 // Messaging system to use. Options are "queue" or "pubsub".
-messaging_system   = "queue"
+messaging_system      = "queue"
 // Name of the applications in the project.
-pubsub_dapr_scopes = ["endpoint", "worker"]
+messaging_dapr_scopes = ["endpoint", "worker"]
 // Name of the "worker" application of the project.
-output_dapr_scopes = ["worker"]
+output_dapr_scopes    = ["worker"]
 ```
 
 Run Terraform:
 
 ```sh
-cd deployments/terraform
+cd deployments/terraform/application-environment
 terraform plan -out=tfplan
 
 # Verify the output and apply.
@@ -105,7 +107,29 @@ docker push <name-of-azure-container-registry>.azurecr.io/worker:1.0.0
 
 ### Deploy Container Apps
 
-Create the container apps into the container app environment:
+#### Terraform
+
+Edit `deployments/terraform/application-environment/terraform.tfvars` and add:
+
+```hcl
+provision_container_apps = true
+endpoint_security_keys   = ["<key>"]
+```
+
+Run Terraform:
+
+```sh
+cd deployments/terraform/application-environment
+terraform plan -out=tfplan
+
+# Verify the output and apply.
+terraform apply tfplan
+```
+
+#### Script
+
+**Note**: Use the Terraform way of provisioning instead, this script was created when
+there where certain limitiations with the Terraform modules and container app scaling.
 
 ```sh
 uuid=$(uuidgen)
@@ -144,7 +168,8 @@ url=https://$(az containerapp show \
   --output tsv
 )
 
-# The UUID ($uuid) we created when deploying the container should be used now.
+# The $uuid should contain either a key set in the variable endpoint_security_keys,
+# or the same $uuid as was used with the script deployment.
 data=$(echo 'testdata' | base64)
 curl -H "X-API-Key: $uuid" $url/reports --data "{\"id\":\"12345\",\"data\":\"$data\"}"
 ```
