@@ -103,8 +103,9 @@ variable "endpoint_container_app" {
 }
 
 variable "endpoint_security_keys" {
-  type    = list(string)
-  default = []
+  type      = list(string)
+  sensitive = true
+  default   = []
 }
 
 variable "worker_container_app" {
