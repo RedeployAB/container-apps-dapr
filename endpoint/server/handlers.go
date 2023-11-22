@@ -23,7 +23,7 @@ func (s server) reportHandler() http.Handler {
 		s.log.Info("Incoming report.", "handler", "report", "id", re.ID)
 
 		if err := s.reporter.Create(report.NewReport(re.ID, re.Data)); err != nil {
-			s.log.Error(err, "Error creating report.")
+			s.log.Error("Error creating report.", "error", err)
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}

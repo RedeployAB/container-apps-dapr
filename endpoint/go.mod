@@ -5,22 +5,16 @@ go 1.21.4
 replace github.com/RedeployAB/container-apps-dapr/common => ../common
 
 require (
-	github.com/RedeployAB/container-apps-dapr/common v0.1.1
 	github.com/caarlos0/env/v10 v10.0.0
 	github.com/dapr/go-sdk v1.9.1
-	github.com/go-logr/logr v1.3.0
 	github.com/google/go-cmp v0.6.0
 )
 
 require (
 	github.com/dapr/dapr v1.12.2 // indirect
-	github.com/go-logr/zerologr v1.2.3 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/uuid v1.4.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/rs/zerolog v1.31.0 // indirect
 	golang.org/x/net v0.18.0 // indirect
 	golang.org/x/sys v0.14.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
