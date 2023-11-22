@@ -2,13 +2,13 @@ package server
 
 import (
 	"errors"
+	"log/slog"
 	"syscall"
 	"testing"
 	"time"
 
 	"github.com/RedeployAB/container-apps-dapr/worker/report"
 	"github.com/dapr/go-sdk/service/common"
-	"github.com/go-logr/logr"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 )
@@ -33,7 +33,7 @@ func TestServerNew(t *testing.T) {
 			},
 			want: &server{
 				reporter: &mockReporter{},
-				log:      logr.Logger{},
+				log:      &slog.Logger{},
 				address:  defaultAddress,
 				name:     defaultName,
 				queue:    defaultQueue,
@@ -65,7 +65,7 @@ func TestServerNew(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			got, gotErr := new(test.input)
 
-			if diff := cmp.Diff(test.want, got, cmp.AllowUnexported(server{}, mockService{}, mockReporter{}), cmpopts.IgnoreUnexported(logr.Logger{})); diff != "" {
+			if diff := cmp.Diff(test.want, got, cmp.AllowUnexported(server{}, mockService{}, mockReporter{}), cmpopts.IgnoreUnexported(slog.Logger{})); diff != "" {
 				t.Errorf("New() = unexpected result, (-want +got):\n%s\n", diff)
 			}
 
@@ -145,10 +145,10 @@ type mockLogger struct{}
 
 var logMessages = []string{}
 
-func (l mockLogger) Error(err error, msg string, keysAndValues ...any) {
+func (l mockLogger) Error(msg string, args ...any) {
 	logMessages = append(logMessages, msg)
 }
 
-func (l mockLogger) Info(msg string, keysAndValues ...any) {
+func (l mockLogger) Info(msg string, args ...any) {
 	logMessages = append(logMessages, msg)
 }

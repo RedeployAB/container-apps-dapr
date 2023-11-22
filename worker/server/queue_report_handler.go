@@ -14,12 +14,12 @@ func (s server) queueReportHandler(ctx context.Context, in *common.BindingEvent)
 
 	var r report.Report
 	if err := json.Unmarshal(in.Data, &r); err != nil {
-		s.log.Error(err, "Failed to deserialize report.", "metadata", in.Metadata)
+		s.log.Error("Failed to deserialize report.", "error", err, "metadata", in.Metadata)
 		return nil, err
 	}
 
 	if err := s.reporter.Create(r); err != nil {
-		s.log.Error(err, "Failed to create report.", "metadata", in.Metadata)
+		s.log.Error("Failed to create report.", "error", err, "metadata", in.Metadata)
 		return nil, err
 	}
 
