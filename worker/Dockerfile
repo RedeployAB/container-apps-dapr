@@ -1,4 +1,4 @@
-# golang:1.20.2-alpine3.17 SHA1 digest.
+# golang:1.21.4-alpine3.18 SHA1 digest.
 FROM golang@sha256:110b07af87238fbdc5f1df52b00927cf58ce3de358eeeb1854f10a8b5e5e1411 as builder
 
 ARG BIN
